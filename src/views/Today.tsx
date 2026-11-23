@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { ExerciseInfo } from '../components/ExerciseInfo'
 import { EXERCISE_BY_ID } from '../data/exercises'
 import { MOMENT_BY_ID } from '../data/schedule'
 import { setExerciseStatus, toggleDone } from '../logic/actions'
@@ -27,6 +28,7 @@ export function TodayView() {
   const route = useRoute()
   const date = route.query.get('dag') ?? today
   const plan = useMemo(() => buildDayPlan(date, progress), [date, progress])
+  const [openEx, setOpenEx] = useState<string | null>(null)
   const s = progress.settings
 
   const all = plan.blocks.flatMap((b) => b.items)
@@ -107,16 +109,20 @@ export function TodayView() {
       const ex = it.exerciseId!
       const st = progress.exercises[ex]
       const mom = MOMENT_BY_ID[EXERCISE_BY_ID[ex]?.momentId]
+      const open = openEx === ex
       return (
-        <li className={`ci ${st ? 'done' : ''}`}>
-          <span className="ci-label">
-            {it.kind === 'demo' && <Pill tone="info">demo</Pill>} {it.label}
-            {mom && it.kind !== 'demo' && <span className="muted small"> · {mom.id}</span>}
-          </span>
-          <span className="ci-right">
-            {it.minutes > 0 && <span className="muted small">{it.minutes}′</span>}
-            <StatusButtons value={st?.status} onChange={(s) => update((p) => setExerciseStatus(p, ex, s, t))} />
-          </span>
+        <li className={`ci ci-ex ${st ? 'done' : ''}`}>
+          <div className="ci-row">
+            <button type="button" className="ci-label link-btn ci-toggle" onClick={() => setOpenEx(open ? null : ex)} aria-expanded={open}>
+              {open ? '▾' : '▸'} {it.kind === 'demo' && <Pill tone="info">demo</Pill>} {it.label}
+              {mom && it.kind !== 'demo' && <span className="muted small"> · {mom.id}</span>}
+            </button>
+            <span className="ci-right">
+              {it.minutes > 0 && <span className="muted small">{it.minutes}′</span>}
+              <StatusButtons value={st?.status} onChange={(s) => update((p) => setExerciseStatus(p, ex, s, t))} />
+            </span>
+          </div>
+          {open && <ExerciseInfo id={ex} />}
         </li>
       )
     }

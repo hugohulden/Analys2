@@ -32,19 +32,18 @@ def S(expr):
 def _zero(expr, var=x, samples=6, lo=0.3, hi=2.7):
     """Sant om uttrycket är identiskt noll (symboliskt, annars numeriskt i flera punkter)."""
     expr = S(expr)
-    try:
-        if simplify(expr) == 0:
-            return True
-    except Exception:
-        pass
     free = sorted(expr.free_symbols, key=str)
     rnd = random.Random(1)
-    for _ in range(samples):
-        subs = {s: rnd.uniform(lo, hi) for s in free}
-        val = complex(N_(expr.subs(subs)))
-        if abs(val) > 1e-8:
-            return False
-    return True
+    try:
+        # Numeriskt först (snabbt): uttrycket ska vara ~0 i flera slumpade punkter.
+        for _ in range(samples):
+            subs = {s: rnd.uniform(lo, hi) for s in free}
+            val = complex(N_(expr.subs(subs)))
+            if abs(val) > 1e-8:
+                return False
+        return True
+    except (TypeError, ValueError):
+        return simplify(expr) == 0
 
 
 def N_(e):
@@ -67,12 +66,14 @@ def num(expr, approx, tol):
 
 
 def defint(f, lo, hi, ans):
-    val = integrate(S(f), (x, S(lo), S(hi)))
-    if eq(val, ans):
-        return True
-    # numerisk kontroll som reserv
-    numeric = Integral(S(f), (x, S(lo), S(hi))).evalf(30)
-    return abs(complex(numeric - N_(S(ans)))) < 1e-10
+    # Numeriskt först (snabbt), symboliskt som reserv.
+    try:
+        numeric = Integral(S(f), (x, S(lo), S(hi))).evalf(30)
+        if abs(complex(numeric - N_(S(ans)))) < 1e-10:
+            return True
+    except (TypeError, ValueError):
+        pass
+    return eq(integrate(S(f), (x, S(lo), S(hi))), ans)
 
 
 def antider(F, f):
@@ -145,7 +146,7 @@ def main():
     data = json.load(open(path) if path else sys.stdin)
     failures, total = [], 0
     for item in data:
-        if not item['checks']:
+        if not item['checks'] and not item.get('optional'):
             failures.append((item['id'], '(inga kontroller)', 'saknas'))
             continue
         for chk in item['checks']:
@@ -156,7 +157,7 @@ def main():
                 ok = f'FEL: {type(e).__name__}: {e}'
             if ok is not True:
                 failures.append((item['id'], chk, ok))
-    print(f'{len(data)} uppgifter, {total} kontroller.')
+    print(f'{len(data)} uppgifter/deluppgifter, {total} kontroller.')
     if failures:
         print(f'\n{len(failures)} MISSLYCKADE:')
         for pid, chk, res in failures:

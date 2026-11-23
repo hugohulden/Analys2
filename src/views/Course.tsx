@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { ExerciseInfo } from '../components/ExerciseInfo'
 import { AREAS } from '../data/areas'
 import { EXERCISES, EXERCISE_BY_ID, momentExercises } from '../data/exercises'
 import { MOMENTS, WEEKS } from '../data/schedule'
@@ -95,30 +96,23 @@ function AskRow({ id, status }: { id: string; status: string }) {
 }
 
 function MomentRow({ m }: { m: Moment }) {
-  const { progress, update, today } = useStore()
+  const { progress, today } = useStore()
   const e = momentExercises(m)
   const all = [...new Set([...e.g, ...e.higher])]
   const done = all.filter((id) => progress.exercises[id]).length
   const isToday = m.date === today
   const kindPill = m.kind === 'F' ? <Pill>Föreläsning</Pill> : m.kind === 'Ö' ? <Pill tone="info">Övning</Pill> : <Pill tone="warn">Dugga</Pill>
 
-  const List = ({ title, ids }: { title: string; ids: string[] }) =>
+  // Vanlig funktion (inte komponent) så att raderna behåller sitt öppna/stängda läge vid omritning.
+  const list = (title: string, ids: string[]) =>
     ids.length ? (
       <div className="ex-group">
         <h4>{title}</h4>
         <ul className="ex-list">
           {ids.map((id) => {
-            const st = progress.exercises[id]
             const other = EXERCISE_BY_ID[id]?.momentId !== m.id && !title.startsWith('Demo') ? EXERCISE_BY_ID[id]?.momentId : undefined
             return (
-              <li key={id} className={st ? 'done' : ''}>
-                <span className="ex-id">
-                  {exerciseLabel(id)}
-                  {st?.ask && st.status !== 'ok' && <span title="Fråga på Ö-passet"> 🙋</span>}
-                  {other && <span className="muted small"> (se {other})</span>}
-                </span>
-                <StatusButtons value={st?.status} onChange={(s) => update((p) => setExerciseStatus(p, id, s, today))} />
-              </li>
+              <ExerciseRow key={id} id={id} other={other} />
             )
           })}
         </ul>
@@ -139,11 +133,30 @@ function MomentRow({ m }: { m: Moment }) {
     >
       <p className="small muted">Avsnitt: {m.sections}</p>
       {m.note && <p className="small warn-text">{m.note}</p>}
-      <List title="G-nivå" ids={e.g} />
-      <List title="Högre nivå" ids={e.higher} />
-      <List title="Demo (G)" ids={e.demoG} />
-      <List title="Demo (högre)" ids={e.demoHigher} />
+      {list('G-nivå', e.g)}
+      {list('Högre nivå', e.higher)}
+      {list('Demo (G)', e.demoG)}
+      {list('Demo (högre)', e.demoHigher)}
       {!all.length && !e.demoG.length && <p className="small muted">Inga övningsuppgifter.</p>}
     </Collapsible>
+  )
+}
+
+function ExerciseRow({ id, other }: { id: string; other?: string }) {
+  const { progress, update, today } = useStore()
+  const [open, setOpen] = useState(false)
+  const st = progress.exercises[id]
+  return (
+    <li className={`ex-row ${st ? 'done' : ''}`}>
+      <div className="ex-line">
+        <button type="button" className="ex-id link-btn" onClick={() => setOpen(!open)} aria-expanded={open}>
+          {open ? '▾' : '▸'} {exerciseLabel(id)}
+          {st?.ask && st.status !== 'ok' && <span title="Fråga på Ö-passet"> 🙋</span>}
+          {other && <span className="muted small"> (se {other})</span>}
+        </button>
+        <StatusButtons value={st?.status} onChange={(s) => update((p) => setExerciseStatus(p, id, s, today))} />
+      </div>
+      {open && <ExerciseInfo id={id} />}
+    </li>
   )
 }
