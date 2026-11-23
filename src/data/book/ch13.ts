@@ -81,6 +81,21 @@ export const CH13: BookTask[] = [
     },
   },
   {
+    id: '13.20', answerSource: 'bok', mark: 'TL', intro: r`Beräkna integralerna`, tip: r`b) Sätt $t=\tan\frac x2$. c) Sätt $t=\tan x$.`,
+    parts: {
+      a: { text: r`$\displaystyle\int_0^{\pi/4}\frac{dx}{1+\sin x\cos x}$`, answer: r`$\frac{\pi}{3\sqrt3}$`, checks: [D('1/(1+sin(x)*cos(x))', 0, 'pi/4', 'pi/(3*sqrt(3))')] },
+      b: { text: r`$\displaystyle\int_0^{\pi/2}\frac{\cos x}{1+\cos x}\,dx$`, answer: r`$\frac\pi2-1$`, checks: [D('cos(x)/(1+cos(x))', 0, 'pi/2', 'pi/2-1')] },
+      c: { text: r`$\displaystyle\int_0^{\pi/4}(\tan^3x+\tan^4x)\,dx$`, answer: r`$\frac\pi4-\frac16-\frac12\ln2$`, checks: [D('tan(x)**3+tan(x)**4', 0, 'pi/4', 'pi/4-Rational(1,6)-log(2)/2')] },
+    },
+  },
+  {
+    id: '13.21', answerSource: 'bok', intro: r`Beräkna integralerna`,
+    parts: {
+      a: { text: r`$\displaystyle\int_{-1}^3\frac{x+3}{\sqrt{x^2+2x+10}}\,dx$`, answer: r`$2+2\ln3$`, checks: [D('(x+3)/sqrt(x**2+2*x+10)', -1, 3, '2+2*log(3)')] },
+      b: { text: r`$\displaystyle\int_0^\pi\frac{\sin x\,dx}{\sqrt{\cos^2x+2\cos x+3}}$`, answer: r`$\ln(\sqrt2+\sqrt3)$`, checks: [D('sin(x)/sqrt(cos(x)**2+2*cos(x)+3)', 0, 'pi', 'log(sqrt(2)+sqrt(3))')] },
+    },
+  },
+  {
     id: '13.22', answerSource: 'bok', intro: r`a) Låt $X$ vara ett positivt tal. Rita kurvan $y=\frac{1}{x^2+1}$, $0\le x\le X$. b) Beräkna $\int_0^X\frac{dx}{x^2+1}$. c) Beräkna $\lim_{X\to\infty}\int_0^X\frac{dx}{x^2+1}$. d) Är den generaliserade integralen $\int_0^\infty\frac{dx}{x^2+1}$ konvergent?`,
     answer: r`a) Avtagande kurva från 1 mot 0. b) $\arctan X$ c) $\pi/2$ d) Integralen är konvergent med värdet $\pi/2$.`, checks: [D('1/(x**2+1)', 0, 'oo', 'pi/2')],
   },

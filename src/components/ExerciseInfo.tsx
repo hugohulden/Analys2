@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { lookupExercise } from '../data/book'
+import { solutionsFor } from '../data/book/solutions'
 import { Pill, Rich } from './ui'
 
 /** Uppgiftstext, bokens tips och facit för en övning (t.ex. '12.17d'). */
 export function ExerciseInfo({ id }: { id: string }) {
   const [showTip, setShowTip] = useState(false)
   const [showAnswer, setShowAnswer] = useState(false)
+  const [showSol, setShowSol] = useState(false)
   const hit = lookupExercise(id)
   if (!hit) {
     return <p className="small muted ex-info">Uppgiftstexten finns inte inlagd än{id.includes(':') ? ' (uppgifter ur pdf-häften läggs in när du skickar dem)' : ''}. Använd boken.</p>
@@ -16,6 +18,7 @@ export function ExerciseInfo({ id }: { id: string }) {
   const tip = task.tip
   const answers = part ? (part.answer ? [[letter!, part.answer] as const] : []) : [...parts.filter(([, p]) => p.answer).map(([l, p]) => [l, p.answer!] as const)]
   const whole = task.answer
+  const sols = solutionsFor(task.id, Object.keys(task.parts ?? {}), letter)
   return (
     <div className="ex-info">
       <div className="row wrap gap small">
@@ -32,11 +35,19 @@ export function ExerciseInfo({ id }: { id: string }) {
       ))}
       <div className="row wrap gap">
         {tip && <button className="btn small-btn" onClick={() => setShowTip(!showTip)}>{showTip ? 'Dölj tips' : 'Visa tips'}</button>}
+        {sols.length > 0 && <button className="btn small-btn" onClick={() => setShowSol(!showSol)}>{showSol ? 'Dölj lösning' : 'Visa lösning'}</button>}
         {(answers.length > 0 || whole) && <button className="btn small-btn" onClick={() => setShowAnswer(!showAnswer)}>{showAnswer ? 'Dölj svar' : 'Visa svar'}</button>}
       </div>
       {showTip && tip && (
         <div className="reveal-part hint">
           <Rich text={tip} />
+        </div>
+      )}
+      {showSol && (
+        <div className="reveal-part steps">
+          {sols.map(([l, txt]) => (
+            <Rich key={l || 'all'} text={l ? `**${l})** ${txt}` : txt} />
+          ))}
         </div>
       )}
       {showAnswer && (
