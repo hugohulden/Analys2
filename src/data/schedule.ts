@@ -1,0 +1,92 @@
+import type { Moment } from './types'
+
+/*
+ * Kursschemat HT2026 (avsnitt 5 i specen).
+ * Övningsnotation (se logic/parse.ts):
+ *   '12.1a-f'        → 12.1a … 12.1f
+ *   '12.2-12.6'      → 12.2 … 12.6
+ *   '12.17a,b,c'     → 12.17a, 12.17b, 12.17c
+ *   'integrering:3-5'→ uppg 3–5 i integrering.pdf
+ */
+export const MOMENTS: Moment[] = [
+  { id: 'F1', kind: 'F', date: '2026-11-02', title: 'Primitiva funktioner', sections: '12.1–12.2', areas: ['int-primitiva'],
+    g: ['12.1a-f', '12.1h,i', '12.2-12.6'], higher: [] },
+  { id: 'F2', kind: 'F', date: '2026-11-03', title: 'Variabelbyte, partialintegration', sections: '12.3', areas: ['int-variabelbyte', 'int-partiell'],
+    g: ['12.7-12.9', '12.10a-f', '12.11', '12.12a', '12.13-12.15', '12.17a,b,c,d,f,h', '12.18a', '12.19', '12.20'],
+    higher: ['12.10g,h', '12.12b', '12.16', '12.17e,g', '12.18b', '12.21'] },
+  { id: 'Ö1', kind: 'Ö', date: '2026-11-04', title: 'Primitiva funktioner, variabelbyte', sections: '–', areas: ['int-primitiva', 'int-variabelbyte'],
+    g: [], higher: [], demoG: ['12.2d', '12.3b,e,l', '12.5e', '12.8b', '12.11g', '12.12a'], demoHigher: ['12.1g', '12.3f', '12.5d', '12.10g,h', '12.12b', '12.16b'] },
+  { id: 'F3', kind: 'F', date: '2026-11-04', title: 'Rationella uttryck: partialbråksuppdelning', sections: '12.4', areas: ['int-partialbrak'],
+    g: ['integreringsmetoder:1', '12.22', '12.23a,b', '12.24a,b,d', '12.25'], higher: ['12.24c', '12.26', '12.27'] },
+  { id: 'Ö2', kind: 'Ö', date: '2026-11-09', title: 'Partialintegration, rationella uttryck', sections: '–', areas: ['int-partiell', 'int-partialbrak'],
+    g: [], higher: [], demoG: ['12.17a', '12.18a', '12.22a', '12.23b', '12.25b'], demoHigher: ['12.17e', '12.18b', '12.24d', '12.26c', '12.27b'] },
+  { id: 'F4', kind: 'F', date: '2026-11-09', title: 'Rationella uttryck forts., trigonometriska funktioner', sections: '12.4 forts., 12.5', areas: ['int-partialbrak', 'int-trig'],
+    g: ['12.30a', '12.31c', '12.34b,d', '12.35d', 'integreringsmetoder:2b,c'], higher: ['12.31b', '12.34c', '12.35', 'integreringsmetoder:2a,d'] },
+  { id: 'Ö3', kind: 'Ö', date: '2026-11-11', title: 'Rationella uttryck forts., trig. funktioner', sections: '–', areas: ['int-partialbrak', 'int-trig'],
+    g: [], higher: [], demoG: ['12.30a', '12.31c', '12.34b', '12.35d', 'integreringsmetoder:2c'], demoHigher: ['12.31b', '12.34c', '12.35d', 'integreringsmetoder:2a'],
+    note: 'I kursplanen står "13.31b" bland högre-demo – tolkat som 12.31b.' },
+  { id: 'F5', kind: 'F', date: '2026-11-11', title: 'Integraler som area, Riemannsumma, räkneregler', sections: '13.3–13.4', areas: ['int-teori'],
+    g: ['13.4', '13.9', 'integrering:1', 'integrering:3-5'], higher: [] },
+  { id: 'F6', kind: 'F', date: '2026-11-12', title: 'Analysens huvudsats, insättningsformeln', sections: '13.5', areas: ['int-teori'],
+    g: ['integrering:2', 'integrering:6-8', '13.11', '13.12', '13.14', '13.15', '13.50'], higher: ['13.10', '13.16a', '13.17c', '13.18a,b', '13.19'] },
+  { id: 'Ö4', kind: 'Ö', date: '2026-11-16', title: 'Area, räkneregler, insättningsformeln', sections: '13.3–13.5', areas: ['int-teori'],
+    g: [], higher: [], demoG: ['13.4', '13.9', 'integrering:4', 'integrering:7a', 'integrering:8a'], demoHigher: ['13.17c', '13.18a', '13.19'] },
+  { id: 'F7', kind: 'F', date: '2026-11-16', title: 'Generaliserade integraler, jämförelsesatser', sections: '13.6', areas: ['int-generaliserade'],
+    g: ['13.22', '13.23b', '13.24a,b', '13.25', '13.26', '13.27a-c', '13.29a-c', '13.30', '13.31a-d'], higher: ['13.24d', '13.28', '13.32'] },
+  { id: 'D1', kind: 'dugga', date: '2026-11-18', title: 'Dugga 1: partialintegration, variabelbyte, partialbråk', sections: '–', areas: ['int-partiell', 'int-variabelbyte', 'int-partialbrak'],
+    g: [], higher: [] },
+  { id: 'Ö5', kind: 'Ö', date: '2026-11-18', title: 'Huvudsatsen, generaliserade integraler', sections: '–', areas: ['int-teori', 'int-generaliserade'],
+    g: [], higher: [], demoG: ['13.11a', '13.24a', '13.26a', '13.31a,c'], demoHigher: ['13.10', '13.12c', '13.24d', '13.28', '13.31c', '13.32a'] },
+  { id: 'F8', kind: 'F', date: '2026-11-18', title: 'Area, volym, tillämpningar', sections: '14.1, 14.2 + ackumulering.pdf (istället för 14.5)', areas: ['tillamp-area', 'tillamp-volym'],
+    g: ['14.1-14.3', '14.5', '14.6', '14.8', '14.39', '14.40', 'ackumulering:13.1-13.3', 'ackumulering:13.6', 'ackumulering:13.10-13.12', 'ackumulering:13.14'],
+    higher: ['14.7', '14.9', '14.10', '14.41'] },
+  { id: 'F9', kind: 'F', date: '2026-11-19', title: 'Massa och tyngdpunkt', sections: '14.3', areas: ['tillamp-massa'],
+    g: ['14.12-14.14', '14.18-14.20'], higher: ['14.15-14.17'] },
+  { id: 'Ö6', kind: 'Ö', date: '2026-11-23', title: 'Area, volym, massa, tyngdpunkt', sections: '–', areas: ['tillamp-area', 'tillamp-volym', 'tillamp-massa'],
+    g: [], higher: [], demoG: ['14.2b', '14.5', '14.40', '14.13', '14.14', '14.19'], demoHigher: ['14.10', '14.41', '14.15', '14.14', '14.19'] },
+  { id: 'F10', kind: 'F', date: '2026-11-23', title: 'DE ordning 1, integrerande faktor', sections: '15.1', areas: ['de1-linjar'],
+    g: ['15.1-15.5', '15.7a,b', '15.8a,c,d', '15.11'], higher: ['15.6', '15.8b', '15.15'] },
+  { id: 'Ö7', kind: 'Ö', date: '2026-11-25', title: 'DE ordning 1, integrerande faktor', sections: '–', areas: ['de1-linjar'],
+    g: [], higher: [], demoG: ['15.2', '15.5a', '15.8c', '15.11'], demoHigher: ['15.6', '15.8b', '15.15'] },
+  { id: 'F11', kind: 'F', date: '2026-11-25', title: 'DE ordning 1: separabla', sections: '15.1 forts.', areas: ['de1-separabel'],
+    g: ['15.19-15.23'], higher: [] },
+  { id: 'F12', kind: 'F', date: '2026-11-26', title: 'DE ordn. 1: tillämpningar; komplexa tal, kvot, division', sections: '15.1 forts., 6.1–6.2', areas: ['de1-tillampning', 'komplexa-rakna'],
+    g: ['15.10', '15.11', '15.12', '15.16', '15.63', '15.71', '6.1-6.14'], higher: ['15.13-15.15', '15.17', '15.27', '6.15-6.17'] },
+  { id: 'Ö8', kind: 'Ö', date: '2026-11-30', title: 'Separabla + tillämpningar, komplexa intro', sections: '–', areas: ['de1-separabel', 'de1-tillampning', 'komplexa-rakna'],
+    g: [], higher: [], demoG: ['15.19a', '15.21d', '6.4c,f', '6.6', '6.8a', '6.12d'], demoHigher: ['15.22b', '15.17', '15.27', '6.8b', '6.12g', '6.17'] },
+  { id: 'F13', kind: 'F', date: '2026-11-30', title: 'Komplexa tal: polär form', sections: '6.3', areas: ['komplexa-rakna'],
+    g: ['6.18-6.25', '6.31', '6.34', '6.55b', '6.56'], higher: ['6.27-6.30', '6.36', '6.61', '6.62'] },
+  { id: 'F14', kind: 'F', date: '2026-12-01', title: 'Komplexa polynomekvationer', sections: '6.4', areas: ['komplexa-ekvationer'],
+    g: ['6.37a', '6.38', '6.41', 'polynomekvationer:1', 'polynomekvationer:4', 'polynomekvationer:5'], higher: ['6.37b', '6.39', '6.43'] },
+  { id: 'Ö9', kind: 'Ö', date: '2026-12-02', title: 'Polär form, komplexa polynomekvationer', sections: '–', areas: ['komplexa-rakna', 'komplexa-ekvationer'],
+    g: [], higher: [], demoG: ['6.19e', '6.24', '6.34c', '6.37a'], demoHigher: ['6.27', '6.30', '6.37b'] },
+  { id: 'F15', kind: 'F', date: '2026-12-02', title: 'Allmänt om komplexa polynomekv.; DE ordning 2', sections: '6.4 forts., 15.2', areas: ['komplexa-ekvationer', 'de2-homogen'],
+    g: ['6.44', '6.45', '6.47', '6.52a-c', '6.68a,b', 'polynomekvationer:2-3', '15.36'], higher: ['6.46', '6.49', '6.52d'] },
+  { id: 'Ö10', kind: 'Ö', date: '2026-12-09', title: 'Binomiska ekv., polynomekv., DE ordning 2', sections: '–', areas: ['komplexa-ekvationer', 'de2-homogen'],
+    g: [], higher: [], demoG: ['6.41b', '6.44', '6.45', '6.68', '15.36'], demoHigher: ['6.43', '6.46', '6.49', '6.52d'] },
+  { id: 'F16', kind: 'F', date: '2026-12-09', title: 'DE: homogena ordning 2, partikulärlösning', sections: '15.2', areas: ['de2-homogen', 'de2-partikular'],
+    g: ['15.37-15.40', '15.45', '15.46', '15.47a,b'], higher: ['15.42', '15.43', '15.47c'] },
+  { id: 'F17', kind: 'F', date: '2026-12-10', title: 'DE: partikulärlösning forts.', sections: '15.2 forts.', areas: ['de2-partikular'],
+    g: ['15.49a-c', '15.54b', '15.57'], higher: ['15.49d', '15.50', '15.51', '15.54c', '15.58'] },
+  { id: 'Ö11', kind: 'Ö', date: '2026-12-14', title: 'DE ordning 2, homogena + partikulär', sections: '–', areas: ['de2-homogen', 'de2-partikular'],
+    g: [], higher: [], demoG: ['15.38a', '15.47a', '15.49a', '15.54b'], demoHigher: ['15.40', '15.43', '15.47c', '15.51', '15.53', '15.54c'] },
+  { id: 'F18', kind: 'F', date: '2026-12-14', title: 'Maclaurinutveckling', sections: '11.1', areas: ['taylor-utveckling'],
+    g: ['11.1a', '11.2', '11.3a,b,g,h', '11.6'], higher: ['11.3', '11.4', '11.7', '11.10'] },
+  { id: 'F19', kind: 'F', date: '2026-12-15', title: 'Gränsvärden m.h.a. Maclaurin, serier, Taylor, ordo', sections: '11.2 forts., 11.3, 11.4 + storaO.pdf', areas: ['taylor-gransvarde', 'taylor-serier', 'taylor-utveckling'],
+    g: ['11.14-11.16', '11.17a,b', '11.20-11.22', '11.30', '11.31', '11.33a-d'], higher: ['11.19', '11.33e', '11.43'] },
+  { id: 'Ö12', kind: 'Ö', date: '2026-12-16', title: 'Taylor- och Maclaurinutveckling', sections: '–', areas: ['taylor-utveckling', 'taylor-gransvarde', 'taylor-serier'],
+    g: [], higher: [], demoG: ['11.14a', '11.16a', '11.22a', '11.31a', '11.33c'], demoHigher: ['11.4', '11.7', '11.22a', '11.31d', '11.33e'] },
+  { id: 'F20', kind: 'F', date: '2026-12-16', title: 'Reserv / repetition', sections: 'allt', areas: [], g: [], higher: [] },
+]
+
+export const MOMENT_BY_ID = Object.fromEntries(MOMENTS.map((m) => [m.id, m])) as Record<string, Moment>
+
+export const WEEKS: { week: number; from: string; to: string }[] = [
+  { week: 45, from: '2026-11-02', to: '2026-11-08' },
+  { week: 46, from: '2026-11-09', to: '2026-11-15' },
+  { week: 47, from: '2026-11-16', to: '2026-11-22' },
+  { week: 48, from: '2026-11-23', to: '2026-11-29' },
+  { week: 49, from: '2026-11-30', to: '2026-12-06' },
+  { week: 50, from: '2026-12-07', to: '2026-12-13' },
+  { week: 51, from: '2026-12-14', to: '2026-12-20' },
+]
