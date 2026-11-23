@@ -13,6 +13,7 @@ function inlineMarkup(s: string) {
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/(^|[\s(])\*(?!\s)(.+?)\*(?=[\s).,:;!?]|$)/g, '$1<em>$2</em>')
     .replace(/\n/g, '<br/>')
+    .replace(/(^|<br\/>)- /g, '$1• ')
 }
 
 /** Markdown-light med KaTeX: stycken, **fet**, *kursiv*, $inline$ och $$display$$. */

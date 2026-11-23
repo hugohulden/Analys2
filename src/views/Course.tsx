@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ExerciseInfo } from '../components/ExerciseInfo'
+import { PracticeGuide, PreviewGuide } from '../components/MomentGuide'
 import { AREAS } from '../data/areas'
 import { EXERCISES, EXERCISE_BY_ID, momentExercises } from '../data/exercises'
 import { MOMENTS, WEEKS } from '../data/schedule'
@@ -133,6 +134,8 @@ function MomentRow({ m }: { m: Moment }) {
     >
       <p className="small muted">Avsnitt: {m.sections}</p>
       {m.note && <p className="small warn-text">{m.note}</p>}
+      <PreviewGuide momentId={m.id} />
+      {m.kind === 'F' && <PracticeGuide momentId={m.id} />}
       {list('G-nivå', e.g)}
       {list('Högre nivå', e.higher)}
       {list('Demo (G)', e.demoG)}

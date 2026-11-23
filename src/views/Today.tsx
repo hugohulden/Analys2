@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ExerciseInfo } from '../components/ExerciseInfo'
+import { PracticeGuide, PreviewGuide } from '../components/MomentGuide'
 import { EXERCISE_BY_ID } from '../data/exercises'
 import { MOMENT_BY_ID } from '../data/schedule'
 import { setExerciseStatus, toggleDone } from '../logic/actions'
@@ -93,6 +94,10 @@ export function TodayView() {
               Starta repetition ({b.items.filter((i) => !i.done).length})
             </button>
           )}
+          {b.id === 'nytt' &&
+            b.items.filter((i) => i.id.startsWith('lec:')).map((i) => <PreviewGuide key={i.id} momentId={i.id.slice(4)} />)}
+          {b.id === 'ovningar' &&
+            [...new Set(b.items.map((i) => EXERCISE_BY_ID[i.exerciseId ?? '']?.momentId).filter(Boolean))].map((mid) => <PracticeGuide key={mid} momentId={mid!} />)}
           <ul className="checklist">
             {b.items.map((it) => (
               <PlanRow key={it.id} it={it} date={date} />
