@@ -11,7 +11,8 @@ export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(new Date().toISOString().slice(0, 10)) },
   plugins: [
     react(),
-    VitePWA({
+    // NO_PWA=1 bygger utan service worker (t.ex. för förhandsvisning som vanlig webbsida).
+    process.env.NO_PWA ? null : VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'figurer/*'],
       manifest: {
