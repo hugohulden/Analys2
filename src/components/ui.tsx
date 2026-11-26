@@ -76,19 +76,6 @@ export function ProgressBar({ value, max = 1, label, tone }: { value: number; ma
 export const STATUS_ICON: Record<ExerciseStatus, string> = { ok: '✅', help: '🟡', fail: '❌' }
 export const STATUS_TEXT: Record<ExerciseStatus, string> = { ok: 'Klarade själv', help: 'Klarade med hjälp', fail: 'Fattar inte' }
 
-/** ✅ / 🟡 / ❌ – tryck igen på vald status för att nollställa. */
-export function StatusButtons({ value, onChange }: { value?: ExerciseStatus; onChange: (s: ExerciseStatus | null) => void }) {
-  return (
-    <span className="status-btns" role="group" aria-label="Status">
-      {(['ok', 'help', 'fail'] as ExerciseStatus[]).map((s) => (
-        <button key={s} type="button" className={`sbtn ${value === s ? 'on' : ''}`} title={STATUS_TEXT[s]} aria-label={STATUS_TEXT[s]} aria-pressed={value === s} onClick={() => onChange(value === s ? null : s)}>
-          {STATUS_ICON[s]}
-        </button>
-      ))}
-    </span>
-  )
-}
-
 export function Collapsible({ title, children, defaultOpen = false, right }: { title: ReactNode; children: ReactNode; defaultOpen?: boolean; right?: ReactNode }) {
   const [open, setOpen] = useState(defaultOpen)
   return (

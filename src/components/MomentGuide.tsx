@@ -1,6 +1,8 @@
 import { EXERCISE_SESSION_COVERS, GUIDES } from '../data/guides'
 import { MOMENT_BY_ID } from '../data/schedule'
 import { Collapsible, Rich } from './ui'
+import { LECTURES } from '../data/lectures'
+import { ExampleCard } from './ExampleCard'
 
 /** "Läs innan föreläsningen" (F) eller "Inför Ö-passet" (Ö: övningstexterna för de föreläsningar passet bygger på). */
 export function PreviewGuide({ momentId, defaultOpen = false }: { momentId: string; defaultOpen?: boolean }) {
@@ -39,13 +41,23 @@ export function PreviewGuide({ momentId, defaultOpen = false }: { momentId: stri
 /** "Om övningarna": vad de tränar, metod, lösta exempel och vanliga fel. */
 export function PracticeGuide({ momentId, defaultOpen = false }: { momentId: string; defaultOpen?: boolean }) {
   const g = GUIDES[momentId]
+  const lec = LECTURES[momentId]
   if (!g) return null
   return (
     <div className="guide">
-      <Collapsible title={<span>✏️ Om övningarna till {momentId}: lösta exempel</span>} defaultOpen={defaultOpen}>
+      <Collapsible title={<span>✏️ Om övningarna till {momentId}: lösta exempel{lec ? ' + lärarens exempel' : ''}</span>} defaultOpen={defaultOpen}>
         <div className="guide-text">
           <Rich text={g.practice} />
         </div>
+        {lec && (
+          <div className="guide-lec">
+            <h4>👩‍🏫 Lärarens exempel från {momentId}: räkna själv, visa sedan stegen</h4>
+            {lec.examples.map((e, i) => (
+              <ExampleCard key={e.id} e={e} n={i + 1} />
+            ))}
+            <a className="btn small-btn" href={`#/forelasning/${momentId}`}>📓 Hela föreläsningen: anteckningar, kontrollfrågor, originalsidor</a>
+          </div>
+        )}
       </Collapsible>
     </div>
   )

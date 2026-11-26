@@ -1,16 +1,19 @@
-import { useMemo, useState } from 'react'
-import { ExerciseInfo } from '../components/ExerciseInfo'
+import { useMemo } from 'react'
 import { PracticeGuide, PreviewGuide } from '../components/MomentGuide'
 import { AREAS } from '../data/areas'
 import { EXERCISES, EXERCISE_BY_ID, momentExercises } from '../data/exercises'
 import { MOMENTS, WEEKS } from '../data/schedule'
 import type { Moment } from '../data/types'
-import { clearAsk, setExerciseStatus } from '../logic/actions'
+import { clearAsk } from '../logic/actions'
 import { formatShort } from '../logic/dates'
 import { exerciseLabel } from '../logic/parse'
 import { nextExerciseSession } from '../logic/planner'
 import { useStore } from '../state/store'
-import { Collapsible, Pill, ProgressBar, StatusButtons } from '../components/ui'
+import { Collapsible, Pill, ProgressBar } from '../components/ui'
+import { ExerciseRow } from '../components/ExerciseRow'
+import type { ExerciseLevel } from '../data/types'
+
+const levelFor = (title: string): ExerciseLevel => (title === 'G-nivå' ? 'G' : title === 'Högre nivå' ? 'högre' : title.includes('högre') ? 'demo-högre' : 'demo-G')
 
 export function CourseView() {
   const { progress, today } = useStore()
@@ -109,11 +112,11 @@ function MomentRow({ m }: { m: Moment }) {
     ids.length ? (
       <div className="ex-group">
         <h4>{title}</h4>
-        <ul className="ex-list">
+        <ul className="exlist">
           {ids.map((id) => {
             const other = EXERCISE_BY_ID[id]?.momentId !== m.id && !title.startsWith('Demo') ? EXERCISE_BY_ID[id]?.momentId : undefined
             return (
-              <ExerciseRow key={id} id={id} other={other} />
+              <ExerciseRow key={id} id={id} level={levelFor(title)} showMoment={false} note={<>{progress.exercises[id]?.ask && progress.exercises[id]?.status !== 'ok' ? <span className="chip-sm st st-fail">🙋 fråga</span> : null}{other ? <span className="chip-sm ghost">se {other}</span> : null}</>} />
             )
           })}
         </ul>
@@ -146,21 +149,3 @@ function MomentRow({ m }: { m: Moment }) {
   )
 }
 
-function ExerciseRow({ id, other }: { id: string; other?: string }) {
-  const { progress, update, today } = useStore()
-  const [open, setOpen] = useState(false)
-  const st = progress.exercises[id]
-  return (
-    <li className={`ex-row ${st ? 'done' : ''}`}>
-      <div className="ex-line">
-        <button type="button" className="ex-id link-btn" onClick={() => setOpen(!open)} aria-expanded={open}>
-          {open ? '▾' : '▸'} {exerciseLabel(id)}
-          {st?.ask && st.status !== 'ok' && <span title="Fråga på Ö-passet"> 🙋</span>}
-          {other && <span className="muted small"> (se {other})</span>}
-        </button>
-        <StatusButtons value={st?.status} onChange={(s) => update((p) => setExerciseStatus(p, id, s, today))} />
-      </div>
-      {open && <ExerciseInfo id={id} />}
-    </li>
-  )
-}

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { GUIDES } from '../data/guides'
-import { LECTURES, type LectureExample } from '../data/lectures'
+import { LECTURES } from '../data/lectures'
 import { MOMENTS, MOMENT_BY_ID } from '../data/schedule'
 import { formatShort } from '../logic/dates'
 import { srsKey } from '../logic/leitner'
@@ -8,6 +8,7 @@ import { useStore } from '../state/store'
 import { go } from '../state/router'
 import { Collapsible, Pill, Rich } from '../components/ui'
 import { PracticeGuide, PreviewGuide } from '../components/MomentGuide'
+import { ExampleCard } from '../components/ExampleCard'
 
 export function LectureView({ id }: { id?: string }) {
   if (!id || !MOMENT_BY_ID[id]) return <LectureList />
@@ -134,53 +135,6 @@ function LecturePage({ id }: { id: string }) {
       <div className="row between">
         {prev ? <a className="btn" href={`#/forelasning/${prev.id}`}>‹ {prev.id}</a> : <span />}
         {next ? <a className="btn" href={`#/forelasning/${next.id}`}>{next.id} ›</a> : <span />}
-      </div>
-    </div>
-  )
-}
-
-function ExampleCard({ e, n }: { e: LectureExample; n: number }) {
-  const [shown, setShown] = useState(0) // antal visade steg; steps.length + 1 = svaret visas
-  const done = shown > e.steps.length
-  return (
-    <div className="example">
-      <div className="row between">
-        <h3>
-          Exempel {n}: {e.title}
-        </h3>
-      </div>
-      <Rich text={e.q} />
-      {e.note && <p className="small muted">{e.note}</p>}
-      {shown > 0 && (
-        <ol className="steps">
-          {e.steps.slice(0, shown).map((s, i) => (
-            <li key={i}>
-              <Rich text={s} />
-            </li>
-          ))}
-        </ol>
-      )}
-      {done && (
-        <div className="reveal-part answer">
-          <Rich text={`**Svar:** ${e.answer}`} />
-        </div>
-      )}
-      <div className="row gap wrap">
-        {!done && (
-          <button className="btn small-btn primary" onClick={() => setShown(shown + 1)}>
-            {shown === 0 ? 'Visa första steget' : shown < e.steps.length ? 'Nästa steg' : 'Visa svaret'}
-          </button>
-        )}
-        {!done && shown === 0 && (
-          <button className="btn small-btn" onClick={() => setShown(e.steps.length + 1)}>
-            Visa hela lösningen
-          </button>
-        )}
-        {shown > 0 && (
-          <button className="btn small-btn" onClick={() => setShown(0)}>
-            Dölj
-          </button>
-        )}
       </div>
     </div>
   )

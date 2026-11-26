@@ -8,7 +8,8 @@ import { addDays, diffDays, formatLong, todayISO } from '../logic/dates'
 import { buildDayPlan, type PlanItem } from '../logic/planner'
 import { useStore } from '../state/store'
 import { useRoute, go } from '../state/router'
-import { fmtMin, Pill, ProgressBar, StatusButtons, RichInline } from '../components/ui'
+import { fmtMin, ProgressBar, RichInline } from '../components/ui'
+import { ExerciseProgress, ExerciseRow, StatusSegment, groupByChapter } from '../components/ExerciseRow'
 
 function Countdown({ label, date, confirmed }: { label: string; date: string; confirmed: boolean }) {
   const { today } = useStore()
@@ -98,11 +99,43 @@ export function TodayView() {
             b.items.filter((i) => i.id.startsWith('lec:')).map((i) => <PreviewGuide key={i.id} momentId={i.id.slice(4)} />)}
           {b.id === 'ovningar' &&
             [...new Set(b.items.map((i) => EXERCISE_BY_ID[i.exerciseId ?? '']?.momentId).filter(Boolean))].map((mid) => <PracticeGuide key={mid} momentId={mid!} />)}
-          <ul className="checklist">
-            {b.items.map((it) => (
-              <PlanRow key={it.id} it={it} date={date} />
-            ))}
-          </ul>
+          {(() => {
+            const exItems = b.items.filter((i) => i.exerciseId && (i.kind === 'exercise' || i.kind === 'demo'))
+            const other = b.items.filter((i) => !exItems.includes(i))
+            const done = exItems.filter((i) => progress.exercises[i.exerciseId!]).length
+            const left = exItems.filter((i) => !progress.exercises[i.exerciseId!]).reduce((a, i) => a + i.minutes, 0)
+            return (
+              <>
+                {other.length > 0 && (
+                  <ul className="checklist">
+                    {other.map((it) => (
+                      <PlanRow key={it.id} it={it} date={date} />
+                    ))}
+                  </ul>
+                )}
+                {exItems.length > 0 && (
+                  <>
+                    {exItems.length >= 3 && <ExerciseProgress done={done} total={exItems.length} minutesLeft={left} />}
+                    {(exItems.length >= 6 ? groupByChapter(exItems, (i) => i.exerciseId!) : [['', exItems] as [string, PlanItem[]]]).map(([ch, items]) => (
+                      <div key={ch || 'all'} className="exgroup">
+                        {ch && (
+                          <div className="exgroup-head">
+                            <span>{ch}</span>
+                            <span>{items.filter((i) => progress.exercises[i.exerciseId!]).length}/{items.length}</span>
+                          </div>
+                        )}
+                        <ul className="exlist">
+                          {items.map((it) => (
+                            <ExerciseRow key={it.id} id={it.exerciseId!} level={it.level} minutes={it.minutes} />
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </>
+            )
+          })()}
         </section>
       ))}
     </div>
@@ -110,7 +143,7 @@ export function TodayView() {
 
   function PlanRow({ it, date }: { it: PlanItem; date: string }) {
     const t = today ?? todayISO()
-    if (it.kind === 'exercise' || it.kind === 'demo' || (it.kind === 'info' && it.exerciseId)) {
+    if (it.kind === 'info' && it.exerciseId) {
       const ex = it.exerciseId!
       const st = progress.exercises[ex]
       const mom = MOMENT_BY_ID[EXERCISE_BY_ID[ex]?.momentId]
@@ -119,13 +152,10 @@ export function TodayView() {
         <li className={`ci ci-ex ${st ? 'done' : ''}`}>
           <div className="ci-row">
             <button type="button" className="ci-label link-btn ci-toggle" onClick={() => setOpenEx(open ? null : ex)} aria-expanded={open}>
-              {open ? '▾' : '▸'} {it.kind === 'demo' && <Pill tone="info">demo</Pill>} {it.label}
-              {mom && it.kind !== 'demo' && <span className="muted small"> · {mom.id}</span>}
+              {open ? '▾' : '▸'} {it.label}
+              {mom && <span className="muted small"> · {mom.id}</span>}
             </button>
-            <span className="ci-right">
-              {it.minutes > 0 && <span className="muted small">{it.minutes}′</span>}
-              <StatusButtons value={st?.status} onChange={(s) => update((p) => setExerciseStatus(p, ex, s, t))} />
-            </span>
+            <StatusSegment value={st?.status} onChange={(s) => update((p) => setExerciseStatus(p, ex, s, t))} />
           </div>
           {open && <ExerciseInfo id={ex} />}
         </li>
