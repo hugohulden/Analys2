@@ -9,6 +9,7 @@ import { CardsView, ReviewSession } from './views/Cards'
 import { StatsView } from './views/Stats'
 import { StrategyView, AreasView, MoreView } from './views/Info'
 import { SettingsView } from './views/Settings'
+import { LectureView } from './views/Lecture'
 
 const NAV = [
   { id: 'idag', label: 'Idag', icon: '☀️' },
@@ -19,7 +20,7 @@ const NAV = [
 ]
 
 const SECTION_OF: Record<string, string> = {
-  uppgift: 'uppgifter', simulering: 'uppgifter', repetition: 'kort', statistik: 'mer', strategi: 'mer', omraden: 'mer', installningar: 'mer',
+  uppgift: 'uppgifter', forelasning: 'kursplan', simulering: 'uppgifter', repetition: 'kort', statistik: 'mer', strategi: 'mer', omraden: 'mer', installningar: 'mer',
 }
 
 export default function App() {
@@ -48,6 +49,7 @@ export default function App() {
     case 'omraden': view = <AreasView id={route.path[1]} />; break
     case 'installningar': view = <SettingsView />; break
     case 'mer': view = <MoreView />; break
+    case 'forelasning': view = <LectureView id={route.path[1]} />; break
     default: view = <TodayView />
   }
 

@@ -13,7 +13,7 @@ export const DUGGA_PROBLEMS: Problem[] = [
     hint: r`Vilken faktor blir enklare när den deriveras: $x$ eller $e^{-3x}$?`,
     method: r`Produkt av polynom och exponentialfunktion → **partialintegration**. Derivera polynomet ($x \to 1$) och integrera exponentialfunktionen ($e^{-3x}\to -\tfrac13 e^{-3x}$).`,
     steps: [
-      r`Partialintegration $\int f'g = fg - \int fg'$ med $f' = e^{-3x}$, $f = -\tfrac13 e^{-3x}$, $g = x$, $g' = 1$:`,
+      r`Partialintegration $\int fg\,dx = Fg - \int Fg'\,dx$ med $f = e^{-3x}$ (integreras), $F = -\tfrac13 e^{-3x}$, $g = x$ (deriveras), $g' = 1$:`,
       r`$$\int_0^2 x e^{-3x}\,dx = \Big[-\tfrac{x}{3}e^{-3x}\Big]_0^2 + \frac13\int_0^2 e^{-3x}\,dx.$$`,
       r`Första termen: $-\tfrac{2}{3}e^{-6} - 0 = -\tfrac23 e^{-6}$.`,
       r`Andra termen: $\frac13\Big[-\tfrac13 e^{-3x}\Big]_0^2 = \frac13\left(-\tfrac13 e^{-6} + \tfrac13\right) = \tfrac19 - \tfrac19 e^{-6}$.`,

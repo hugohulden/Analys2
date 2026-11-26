@@ -134,6 +134,7 @@ function MomentRow({ m }: { m: Moment }) {
     >
       <p className="small muted">Avsnitt: {m.sections}</p>
       {m.note && <p className="small warn-text">{m.note}</p>}
+      {m.kind !== 'dugga' && <a className="btn small-btn" href={`#/forelasning/${m.id}`}>📓 Öppna {m.kind === 'F' ? 'föreläsningssidan' : 'sidan för Ö-passet'}</a>}
       <PreviewGuide momentId={m.id} />
       {m.kind === 'F' && <PracticeGuide momentId={m.id} />}
       {list('G-nivå', e.g)}

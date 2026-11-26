@@ -136,6 +136,7 @@ function AreaDetail({ id, mastery }: { id: AreaId; mastery: number }) {
 
 export function MoreView() {
   const links = [
+    { href: '#/forelasning', t: 'Föreläsningar', d: 'Anteckningar, lärarens exempel, kontrollfrågor' },
     { href: '#/statistik', t: 'Statistik – var står jag?', d: 'Behärskning, förväntade poäng, duggaresultat' },
     { href: '#/simulering', t: 'Tentasimulering', d: 'Riktiga tentor, mixtenta, mini-dugga' },
     { href: '#/strategi', t: 'Strategi', d: 'Tentaanalys: vad ger poäng' },

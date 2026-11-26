@@ -109,7 +109,7 @@ export interface ExamSource {
   problemIds: string[]
 }
 
-export type CardKind = 'utantill' | 'janej' | 'metod'
+export type CardKind = 'utantill' | 'janej' | 'metod' | 'forelasning'
 
 export interface Card {
   id: string

@@ -103,14 +103,14 @@ function problemItem(p: Progress, pid: string, date: string): PlanItem {
 function reviewItem(p: Progress, key: string, date: string): PlanItem {
   const { type, id } = parseSrsKey(key)
   let label = id
-  if (type === 'card') label = `Kort: ${CARD_BY_ID[id]?.kind === 'janej' ? 'ja/nej' : CARD_BY_ID[id]?.kind === 'metod' ? 'metod' : 'utantill'}`
+  if (type === 'card') label = `Kort: ${({ janej: 'ja/nej', metod: 'metod', utantill: 'utantill', forelasning: 'föreläsningsfråga' } as const)[CARD_BY_ID[id]?.kind ?? 'utantill']}`
   if (type === 'prob') label = `Uppgift: ${problemTitle(PROBLEM_BY_ID[id])}`
   if (type === 'ex') label = `Övning ${EXERCISE_BY_ID[id]?.label ?? id} igen`
   return { id: `rep:${key}`, kind: 'review', label, minutes: keyMinutes(key), done: (p.srs[key]?.last ?? '') >= date, srsKey: key }
 }
 
 /** Repetitionsposter för dagen: de som redan gjorts idag + nytt urval upp till n. */
-function reviewItems(p: Progress, date: string, m: MasteryMap, n: number, kinds?: ('utantill' | 'janej' | 'metod')[]): PlanItem[] {
+function reviewItems(p: Progress, date: string, m: MasteryMap, n: number, kinds?: ('utantill' | 'janej' | 'metod' | 'forelasning')[]): PlanItem[] {
   if (n <= 0) return []
   const doneToday = Object.entries(p.srs)
     .filter(([key, st]) => st.last === date && (!kinds || (parseSrsKey(key).type === 'card' && kinds.includes(CARD_BY_ID[parseSrsKey(key).id]?.kind))))
@@ -207,9 +207,9 @@ export function buildDayPlan(date: string, p: Progress): DayPlan {
     const items: PlanItem[] = []
     for (const mo of momentsToday) {
       if (mo.kind === 'F') {
-        items.push({ id: `lec:${mo.id}`, kind: 'lecture', label: `${mo.id}: ${mo.title}${mo.sections !== '–' ? ` (avsnitt ${mo.sections})` : ''}`, minutes: lessTime ? 0 : MIN.lecture, done: markDone(p, date, `lec:${mo.id}`) })
+        items.push({ id: `lec:${mo.id}`, kind: 'lecture', label: `${mo.id}: ${mo.title}${mo.sections !== '–' ? ` (avsnitt ${mo.sections})` : ''}`, minutes: lessTime ? 0 : MIN.lecture, done: markDone(p, date, `lec:${mo.id}`), link: `#/forelasning/${mo.id}` })
       } else if (mo.kind === 'Ö') {
-        items.push({ id: `lec:${mo.id}`, kind: 'lecture', label: `${mo.id}: ${mo.title} – försök själv på demo-uppgifterna först`, minutes: 0, done: markDone(p, date, `lec:${mo.id}`) })
+        items.push({ id: `lec:${mo.id}`, kind: 'lecture', label: `${mo.id}: ${mo.title} – försök själv på demo-uppgifterna först`, minutes: 0, done: markDone(p, date, `lec:${mo.id}`), link: `#/forelasning/${mo.id}` })
         if (!lessTime) {
           const demos = [...expandAll(mo.demoG), ...(inclHigher ? expandAll(mo.demoHigher) : [])]
           for (const id of [...new Set(demos)]) {
@@ -321,7 +321,7 @@ export function buildDayPlan(date: string, p: Progress): DayPlan {
       main.push({ id: 'info:exam', kind: 'info', label: 'Tentan idag, 4 h med formelblad. Ät frukost, ta med legitimation och penna. Lycka till!', minutes: 0, done: false })
       break
     case 'rest':
-      extraBlocks.push({ id: 'rep', title: 'Valfritt: max 30 min flashcards', tone: 'calm', items: reviewItems(p, date, m, 8, ['utantill', 'metod', 'janej']) })
+      extraBlocks.push({ id: 'rep', title: 'Valfritt: max 30 min flashcards', tone: 'calm', items: reviewItems(p, date, m, 8, ['utantill', 'metod', 'janej', 'forelasning']) })
       break
     case 'light':
       if (date === addDays(s.examDate, -2) || PLAN_BY_DATE[date]?.title.startsWith('Formelblad')) {

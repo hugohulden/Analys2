@@ -46,7 +46,7 @@ Skriv om: $3x^{1/2}-2x^{-2}+e^{2x}$. Termvis: $3\cdot\frac{x^{3/2}}{3/2}-2\cdot\
 
 **Variabelbyte (substitution).** $\int f(g(x))\,g'(x)\,dx=\int f(u)\,du$ med $u=g(x)$. Använd metoden när en *inre funktion och dess derivata* båda finns med, t.ex. $\int x^2\cos x^3\,dx$.
 
-**Partialintegration.** $\int f'(x)g(x)\,dx=f(x)g(x)-\int f(x)g'(x)\,dx$. Använd metoden för *produkter*, t.ex. $\int xe^x\,dx$ eller $\int x\ln x\,dx$. Välj $g$ som den faktor som blir enklare av att deriveras: polynom, $\ln x$ eller $\arctan x$.
+**Partialintegration.** $\int f(x)g(x)\,dx=F(x)g(x)-\int F(x)g'(x)\,dx$ ($f$ integreras, $g$ deriveras – lärarens skrivsätt). Använd metoden för *produkter*, t.ex. $\int xe^x\,dx$ eller $\int x\ln x\,dx$. Välj $g$ som den faktor som blir enklare av att deriveras: polynom, $\ln x$ eller $\arctan x$.
 
 **Varför?** Precis de här metoderna testades på Dugga 1 och återkommer som tentauppgift 3 (cirka 10 p).
 
@@ -169,7 +169,7 @@ $$G'(x)=e^{(x^2)^2}\cdot2x-e^{x^2}=2xe^{x^4}-e^{x^2}.$$
 **Varför?** Uppgift 5 på tentan, och flera av omtentans ja/nej-fällor.`,
     practice: r`**Vad övningarna tränar (13.22–13.32).** Att beräkna via gränsvärde, samt att avgöra konvergens med jämförelse när primitiven är svår.
 
-**Löst exempel 1.** $\int_1^\infty\frac{\ln x}{x^2}dx$. Partialintegration med $f'=x^{-2}$, $g=\ln x$ ger primitiven $-\frac{\ln x}x-\frac1x$.
+**Löst exempel 1.** $\int_1^\infty\frac{\ln x}{x^2}dx$. Partialintegration med $f=x^{-2}$ (integreras), $g=\ln x$ (deriveras) ger primitiven $-\frac{\ln x}x-\frac1x$.
 $$\int_1^R\frac{\ln x}{x^2}dx=\left(-\frac{\ln R}R-\frac1R\right)-(0-1)\to0+1=1\quad(R\to\infty).$$
 Integralen är konvergent med värdet 1.
 

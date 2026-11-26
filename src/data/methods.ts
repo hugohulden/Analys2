@@ -67,7 +67,7 @@ export const METHOD_TREES: MethodTree[] = [
           { label: r`$\ln x$ eller $\arctan x$`, next: 'pi-ln' },
         ],
       },
-      'pi-pol': { result: r`**Partialintegration** $\int f'g = fg - \int fg'$ med $g$ = polynomet. Upprepa $n$ gånger för $x^n$. Kontroll: derivera svaret.` },
+      'pi-pol': { result: r`**Partialintegration** $\int fg\,dx = Fg - \int Fg'\,dx$ med $g$ = polynomet (deriveras) och $f$ = den andra faktorn (integreras). Upprepa $n$ gånger för $x^n$. Kontroll: derivera svaret.` },
       'pi-ln': { result: r`**Partialintegration** med $g = \ln x$ (eller $\arctan x$) och $f'$ = det andra (även $f' = 1$ fungerar: $\int\ln x\,dx = x\ln x - x + C$).` },
       ekv: { result: r`**Partialintegration två gånger + ekvationstricket.** Integrera $e^{ax}$ båda gångerna. Du får $I = (\dots) - cI$, så $I = \frac{(\dots)}{1+c} + C$. (ht25 #3b.)` },
       vb: { result: r`**Variabelbyte** $u = $ den inre funktionen. Räkna $du = u'(x)\,dx$ och justera konstanten. I bestämd integral: **byt gränser**. Ex: $\int x^2\cos x^3\,dx$, $u = x^3$.` },

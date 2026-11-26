@@ -59,7 +59,7 @@ export const THEORY: Record<AreaId, AreaTheory> = {
     exampleProblems: ['d1A-2', 'ht24-3b', 'ht25-3a', 'd2Bht24-2'],
   },
   'int-partiell': {
-    summary: r`Partialintegration är produktregeln baklänges: $\int f'g\,dx = fg - \int fg'\,dx$. Välj $g$ som den faktor som blir enklare av derivering (polynom, $\ln x$, $\arctan x$) och $f'$ som den som är lätt att integrera ($e^{kx}$, $\sin$, $\cos$, $x^n$).`,
+    summary: r`Partialintegration är produktregeln baklänges. Med lärarens skrivsätt: $\int f(x)g(x)\,dx = F(x)g(x) - \int F(x)g'(x)\,dx$, där $f$ **integreras** (↑) och $g$ **deriveras** (↓). Välj $g$ som den faktor som blir enklare av derivering (polynom, $\ln x$, $\arctan x$) och $f$ som den som är lätt att integrera ($e^{kx}$, $\sin$, $\cos$). Grundidé: döda $x^n$ med derivering.`,
     method: [r`Identifiera $g$ (deriveras) och $f'$ (integreras).`, r`Skriv upp formeln, räkna den nya integralen.`, r`Polynom av grad $n$: upprepa $n$ gånger.`, r`$e^{ax}\cos bx$: två gånger + ekvationstricket.`, r`Kontrollera genom derivering.`],
     traps: [r`Fel val (derivera $e^x$, integrera $x$) gör integralen svårare.`, r`Teckenfel med $-\frac13e^{-3x}$.`, r`Bestämd integral: glöm inte att sätta in gränser i $fg$-termen.`],
     example: { q: r`$\int x\cos x\,dx$`, a: r`$x\sin x - \int\sin x\,dx = x\sin x + \cos x + C$` },

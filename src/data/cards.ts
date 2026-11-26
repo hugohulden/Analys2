@@ -1,4 +1,5 @@
 import type { Card } from './types'
+import { LECTURES } from './lectures'
 
 const r = String.raw
 
@@ -9,7 +10,7 @@ const UTANTILL: Card[] = [
   { id: 'u-prim-atan', kind: 'utantill', area: 'int-primitiva', front: r`$\displaystyle\int\frac{1}{1+x^2}\,dx$ och $\displaystyle\int\frac{1}{a^2+x^2}\,dx$`, back: r`$\arctan x + C$ och $\frac1a\arctan\frac xa + C$` },
   { id: 'u-prim-fprim', kind: 'utantill', area: 'int-primitiva', front: r`$\displaystyle\int\frac{f'(x)}{f(x)}\,dx$`, back: r`$\ln|f(x)| + C$. Ex: $\int\frac{2x}{x^2+1}dx = \ln(x^2+1) + C$, $\int\tan x\,dx = -\ln|\cos x| + C$.` },
   { id: 'u-prim-asin', kind: 'utantill', area: 'int-primitiva', front: r`$\displaystyle\int\frac{1}{\sqrt{1-x^2}}\,dx$ och $\displaystyle\int\frac{1}{\cos^2x}\,dx$`, back: r`$\arcsin x + C$ och $\tan x + C$` },
-  { id: 'u-partiell', kind: 'utantill', area: 'int-partiell', front: r`Partialintegrationsformeln`, back: r`$$\int f'(x)g(x)\,dx = f(x)g(x) - \int f(x)g'(x)\,dx$$ Välj $g$ = det som blir enklare av derivering (polynom, $\ln x$, $\arctan x$).` },
+  { id: 'u-partiell', kind: 'utantill', area: 'int-partiell', front: r`Partialintegrationsformeln`, back: r`Lärarens skrivsätt: $$\int f(x)g(x)\,dx = F(x)g(x) - \int F(x)g'(x)\,dx$$ $f$ integreras (↑), $g$ deriveras (↓). Välj $g$ = det som blir enklare av derivering (polynom, $\ln x$, $\arctan x$).` },
   { id: 'u-varbyte', kind: 'utantill', area: 'int-variabelbyte', front: r`Variabelbyte i *bestämd* integral – vad måste man komma ihåg?`, back: r`Byt gränserna! $u = g(x)$: $\displaystyle\int_a^b f(g(x))g'(x)\,dx = \int_{g(a)}^{g(b)} f(u)\,du$. (Alternativt: byt tillbaka till $x$ innan insättning.)` },
   { id: 'u-pb-enkla', kind: 'utantill', area: 'int-partialbrak', front: r`Partialbråksansats för $\dfrac{p(x)}{(x-a)(x-b)}$ ($a \ne b$)`, back: r`$\dfrac{A}{x-a} + \dfrac{B}{x-b}$. Snabbt: handpåläggning – sätt $x = a$ för $A$.` },
   { id: 'u-pb-dubbel', kind: 'utantill', area: 'int-partialbrak', front: r`Partialbråksansats för $\dfrac{p(x)}{(x-a)^2}$ (dubbelrot)`, back: r`$\dfrac{A}{x-a} + \dfrac{B}{(x-a)^2}$, där $\int\frac{B}{(x-a)^2}dx = -\frac{B}{x-a}$.` },
@@ -69,5 +70,8 @@ const METOD: Card[] = [
   { id: 'm-taylor-sub', kind: 'metod', area: 'taylor-utveckling', front: r`Maclaurin för $\cos x^2$, $e^{-x^2}$, $\ln(1+2x)$ – smartaste metoden?`, back: r`Sätt in i standardutvecklingen ($t = x^2$, $t = -x^2$, $t = 2x$). Derivera inte!` },
 ]
 
-export const CARDS: Card[] = [...UTANTILL, ...JANEJ, ...METOD]
+/** "Testa dig själv"-frågor från föreläsningsanteckningarna. */
+const FORELASNING: Card[] = Object.values(LECTURES).flatMap((l) => l.quiz.map((q) => ({ id: q.id, kind: 'forelasning' as const, area: q.area, front: `**${l.id}:** ${q.q}`, back: q.a })))
+
+export const CARDS: Card[] = [...UTANTILL, ...JANEJ, ...METOD, ...FORELASNING]
 export const CARD_BY_ID = Object.fromEntries(CARDS.map((c) => [c.id, c])) as Record<string, Card>

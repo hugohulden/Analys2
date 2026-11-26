@@ -1015,3 +1015,24 @@ input[type='date'] {
 .guide-text .para {
   margin: 0.5em 0;
 }
+
+/* Föreläsningssidan */
+.keypoints ul { padding-left: 1.2em; margin: 0; }
+.keypoints li { margin-bottom: 6px; }
+.example { border-top: 1px solid var(--border); padding: 10px 0; display: flex; flex-direction: column; gap: 8px; }
+.example:first-of-type { border-top: none; }
+.example h3 { margin: 0; font-size: 0.98rem; }
+.quiz {
+  display: block; width: 100%; text-align: left; font: inherit; color: var(--text);
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; margin: 6px 0; cursor: pointer;
+}
+.quiz.open { background: var(--ok-soft); }
+.quiz-a { border-top: 1px dashed var(--border); margin-top: 8px; padding-top: 8px; }
+.pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.page-thumb { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; }
+.page-thumb img { width: 100%; border-radius: 6px; border: 1px solid var(--border); background: #fff; }
+.riemann { margin: 8px 0; background: var(--surface); }
+.rr-pos { fill: color-mix(in srgb, var(--accent) 30%, transparent); stroke: var(--accent); stroke-width: 0.5; }
+.rr-neg { fill: color-mix(in srgb, var(--bad) 25%, transparent); stroke: var(--bad); stroke-width: 0.5; }
+input[type='range'] { width: 100%; }
