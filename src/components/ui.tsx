@@ -23,18 +23,14 @@ export function renderRich(text: string): string {
   const paras = text.split(/\n\s*\n/)
   const html = paras
     .map((para) => {
-      let out = ''
-      let last = 0
-      const re = /\$\$([\s\S]+?)\$\$|\$([^$]+?)\$/g
-      let m: RegExpExecArray | null
-      while ((m = re.exec(para))) {
-        out += inlineMarkup(para.slice(last, m.index))
-        const display = m[1] !== undefined
-        const tex = display ? m[1] : m[2]
-        out += katex.renderToString(tex, { displayMode: display, throwOnError: false, strict: 'ignore' })
-        last = m.index + m[0].length
-      }
-      out += inlineMarkup(para.slice(last))
+      // Formler byts mot platshållare först, så att **fet text med $x$** fungerar.
+      const math: string[] = []
+      const masked = para.replace(/\$\$([\s\S]+?)\$\$|\$([^$]+?)\$/g, (_, d: string | undefined, i: string | undefined) => {
+        const display = d !== undefined
+        math.push(katex.renderToString(display ? d : i!, { displayMode: display, throwOnError: false, strict: 'ignore' }))
+        return `\u0000${math.length - 1}\u0000`
+      })
+      const out = inlineMarkup(masked).replace(/\u0000(\d+)\u0000/g, (_, n: string) => math[Number(n)])
       return `<div class="para">${out}</div>`
     })
     .join('')

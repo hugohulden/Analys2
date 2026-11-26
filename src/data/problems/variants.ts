@@ -283,14 +283,16 @@ export const VARIANT_PROBLEMS: Problem[] = [
   {
     id: 'v6-c', source: 'variant', number: '6c', slot: 6, areas: ['tillamp-volym'], points: 4,
     statement: r`Området mellan $y = x(2 - x)$ och $x$-axeln roteras kring $y$-axeln. Bestäm volymen.`,
-    hint: r`Rotation kring $y$-axeln → rörmetoden $V = 2\pi\int x\,y\,dx$.`,
-    method: r`**Rörmetoden** (cylindriska skal).`,
+    hint: r`Rotation kring $y$-axeln: skiva vågrätt. Varje skiva är en ring – lös ut $x$ som funktion av $y$.`,
+    method: r`**Volymelement (F8):** $dV=A(y)\,dy$ med ringar, $A(y)=\pi\left(x_{yttre}^2-x_{inre}^2\right)$.`,
     steps: [
-      r`Kurvan skär $x$-axeln i $x = 0$ och $x = 2$.`,
-      r`$V = 2\pi\int_0^2 x\cdot x(2 - x)\,dx = 2\pi\int_0^2(2x^2 - x^3)\,dx = 2\pi\left(\frac{16}{3} - 4\right) = \frac{8\pi}{3}$ v.e.`,
+      r`Kurvan skär $x$-axeln i $x = 0$ och $x = 2$ och har maximum $y=1$ i $x=1$. Området är alltså $0\le y\le1$.`,
+      r`Lös ut $x$: $y=2x-x^2\iff(x-1)^2=1-y\iff x=1\pm\sqrt{1-y}$. På höjden $y$ är den yttre radien $1+\sqrt{1-y}$ och den inre $1-\sqrt{1-y}$.`,
+      r`Ringens area, med $s=\sqrt{1-y}$: $A(y)=\pi\left((1+s)^2-(1-s)^2\right)=4\pi s=4\pi\sqrt{1-y}$.`,
+      r`$V=\int_0^14\pi\sqrt{1-y}\,dy=4\pi\left[-\frac23(1-y)^{3/2}\right]_0^1=4\pi\cdot\frac23=\frac{8\pi}3$ v.e.`,
     ],
     answer: r`$\dfrac{8\pi}{3}$ v.e.`,
-    checks: ["defint('2*pi*x*x*(2-x)', 0, 2, '8*pi/3')"],
+    checks: ["defint('4*pi*sqrt(1-x)', 0, 1, '8*pi/3')"],
   },
   {
     id: 'v6-d', source: 'variant', number: '6d', slot: 6, areas: ['tillamp-massa'], points: 4,
@@ -376,7 +378,8 @@ export const VARIANT_PROBLEMS: Problem[] = [
     steps: [
       r`$r^2 - 4r + 4 = (r - 2)^2 = 0$, dubbelrot $r = 2$: $y_h = (C_1 + C_2x)e^{2x}$.`,
       r`Både $e^{2x}$ och $xe^{2x}$ löser den homogena ekvationen, så ansätt $y_p = Ax^2e^{2x}$.`,
-      r`Med $y = z e^{2x}$ blir $y'' - 4y' + 4y = z''e^{2x}$; här $z = Ax^2$, $z'' = 2A = 1 \Rightarrow A = \frac12$.`,
+      r`Derivera: $y_p' = A(2x + 2x^2)e^{2x}$, $y_p'' = A(2 + 8x + 4x^2)e^{2x}$.`,
+      r`Sätt in: $Ae^{2x}\left[(2 + 8x + 4x^2) - 4(2x + 2x^2) + 4x^2\right] = 2Ae^{2x} = e^{2x} \Rightarrow A = \frac12$.`,
     ],
     answer: r`$y = (C_1 + C_2x)e^{2x} + \dfrac{x^2}{2}e^{2x}$`,
     checks: ["ode_ok('Derivative(y(x),x,2) - 4*Derivative(y(x),x) + 4*y(x) - exp(2*x)', '(C1 + C2*x)*exp(2*x) + x**2*exp(2*x)/2')"],

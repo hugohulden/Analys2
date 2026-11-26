@@ -207,7 +207,7 @@ export const METHOD_TREES: MethodTree[] = [
       },
       area: { result: r`Hitta skärningspunkter. Avgör vilken kurva som ligger överst (testa en punkt). $A = \int(\text{övre} - \text{undre})\,dx$. Area under $x$-axeln räknas positivt – dela upp vid nollställen.` },
       vx: { result: r`Skivmetoden $V = \pi\int_a^b f(x)^2\,dx$. Mellan två kurvor: $\pi\int(f^2 - g^2)$. Oändligt intervall → generaliserad integral (ht24 #6).` },
-      vy: { result: r`Rörmetoden $V = 2\pi\int_a^b x\,f(x)\,dx$ (eller lös ut $x(y)$ och använd skivmetoden i $y$).` },
+      vy: { result: r`Skiva vågrätt (F8): lös ut $x$ som funktion av $y$. Tvärsnittet är en cirkelskiva $A(y)=\pi x(y)^2$ eller en ring $\pi(x_{yttre}^2-x_{inre}^2)$, och $V=\int A(y)\,dy$. Rörformeln ingår inte.` },
       massa: { result: r`Formelbladet: $dm = \rho\,d\ell$ (eller $\rho\,dA$, $\rho\,dV$), $m = \int dm$, $x_T = \frac1m\int x\,dm$. Rimlighetskontroll: $x_T$ ligger närmare den tyngre änden.` },
     },
   },

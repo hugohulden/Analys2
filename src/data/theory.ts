@@ -101,8 +101,8 @@ export const THEORY: Record<AreaId, AreaTheory> = {
     exampleProblems: ['ht24-5', 'ht25-6', 'v6-a'],
   },
   'tillamp-volym': {
-    summary: r`Rotation kring $x$-axeln (skivmetoden): $V = \pi\int_a^bf(x)^2\,dx$. Kring $y$-axeln (rörmetoden): $V = 2\pi\int_a^bx\,f(x)\,dx$. Ingen av dessa står på formelbladet.`,
-    method: [r`Avgör rotationsaxel.`, r`Välj skiv- eller rörmetod.`, r`Sätt upp och beräkna integralen (kan vara generaliserad).`],
+    summary: r`Volymelement $dV=A(x)\,dx$, alltså $V=\int A(x)\,dx$ (F8). Rotation kring $x$-axeln: tvärsnitten är cirkelskivor, $V = \pi\int_a^bf(x)^2\,dx$. Kring $y$-axeln: skiva vågrätt, $V=\int\pi x(y)^2\,dy$ (eller ringar). Rörformeln ingår inte. Formlerna står inte på formelbladet.`,
+    method: [r`Rita figur och avgör rotationsaxel.`, r`Skiva vinkelrätt mot axeln och skriv upp tvärsnittsarean $A$ (cirkelskiva eller ring).`, r`Sätt upp och beräkna integralen (kan vara generaliserad).`],
     traps: [r`Glömt $\pi$ eller kvadraten.`, r`Mellan två kurvor: $\pi\int(f^2 - g^2)$, inte $\pi\int(f - g)^2$.`],
     example: { q: r`$y = x$, $0 \le x \le 1$, kring $x$-axeln.`, a: r`$\pi\int_0^1x^2dx = \frac\pi3$ (en kon).` },
     exampleProblems: ['ht24-6', 'v6-b', 'v6-c'],

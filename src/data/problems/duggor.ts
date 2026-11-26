@@ -1,3 +1,4 @@
+import { PI } from '../book/solutions/fmt'
 import type { Problem } from '../types'
 
 const r = String.raw
@@ -100,7 +101,7 @@ export const DUGGA_PROBLEMS: Problem[] = [
     hint: r`Derivera $6x$, integrera $e^{2x}$.`,
     method: r`Polynom · exponential → **partialintegration**.`,
     steps: [
-      r`$f' = e^{2x}$, $f = \tfrac12 e^{2x}$, $g = 6x$, $g' = 6$:`,
+      r`Partialintegration (F3), $\int fg=Fg-\int Fg'$:${PI(r`e^{2x}`, r`\tfrac12e^{2x}`, r`6x`, r`6`)}`,
       r`$$\int 6x e^{2x}\,dx = 3x e^{2x} - \int 3e^{2x}\,dx = 3x e^{2x} - \tfrac32 e^{2x} + C.$$`,
       r`*Kontroll:* $\frac{d}{dx}\left(3xe^{2x} - \tfrac32 e^{2x}\right) = 3e^{2x} + 6xe^{2x} - 3e^{2x} = 6xe^{2x}$ ✓`,
     ],
@@ -137,7 +138,7 @@ export const DUGGA_PROBLEMS: Problem[] = [
     id: 'd2Bht24-1', source: 'dugga2B-ht24', number: '1', slot: 3, areas: ['int-partiell'], points: 2,
     statement: r`Använd partialintegration för att bestämma $\displaystyle\int 6x e^{3x}\,dx$.`,
     hint: r`Derivera $6x$.`,
-    method: r`**Partialintegration** med $f = \tfrac13 e^{3x}$, $g = 6x$.`,
+    method: r`**Partialintegration** med $f = e^{3x}$ (integreras, $F=\tfrac13e^{3x}$) och $g = 6x$ (deriveras).`,
     steps: [
       r`$$\int 6xe^{3x}\,dx = 2xe^{3x} - \int 2e^{3x}\,dx = 2xe^{3x} - \tfrac23 e^{3x} + C.$$`,
       r`*Kontroll:* $2e^{3x} + 6xe^{3x} - 2e^{3x} = 6xe^{3x}$ ✓`,
@@ -177,7 +178,7 @@ export const DUGGA_PROBLEMS: Problem[] = [
     hint: r`$\ln x$ har ingen enkel primitiv – men en enkel derivata. Derivera $\ln x$!`,
     method: r`Produkt med $\ln x$ → **partialintegration** där $\ln x$ deriveras och $x^{-1/2}$ integreras.`,
     steps: [
-      r`$f' = x^{-1/2}$, $f = 2\sqrt x$, $g = \ln x$, $g' = \frac1x$:`,
+      r`Partialintegration (F3), $\int fg=Fg-\int Fg'$:${PI(r`x^{-1/2}`, r`2\sqrt x`, r`\ln x`, r`\frac1x`)}`,
       r`$$\int x^{-1/2}\ln x\,dx = 2\sqrt x\ln x - \int 2\sqrt x\cdot\frac1x\,dx = 2\sqrt x\ln x - \int 2x^{-1/2}\,dx.$$`,
       r`$$= 2\sqrt x\ln x - 4\sqrt x + C.$$`,
       r`*Kontroll:* $\frac{1}{\sqrt x}\ln x + \frac{2\sqrt x}{x} - \frac{2}{\sqrt x} = \frac{\ln x}{\sqrt x}$ ✓`,

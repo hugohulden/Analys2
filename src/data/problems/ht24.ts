@@ -1,3 +1,4 @@
+import { PI } from '../book/solutions/fmt'
 import type { Problem } from '../types'
 
 const r = String.raw
@@ -54,7 +55,7 @@ export const HT24_PROBLEMS: Problem[] = [
     hint: r`Derivera $\ln x$, integrera $x^3$.`,
     method: r`Produkt med $\ln x$ → **partialintegration** där $\ln x$ deriveras.`,
     steps: [
-      r`$f' = x^3$, $f = \frac{x^4}4$, $g = \ln x$, $g' = \frac1x$:`,
+      r`Partialintegration (F3), $\int fg=Fg-\int Fg'$:${PI(r`x^3`, r`\frac{x^4}4`, r`\ln x`, r`\frac1x`)}`,
       r`$$\int_1^e x^3\ln x\,dx = \Big[\frac{x^4}{4}\ln x\Big]_1^e - \int_1^e \frac{x^4}{4}\cdot\frac1x\,dx = \frac{e^4}{4} - 0 - \Big[\frac{x^4}{16}\Big]_1^e.$$`,
       r`$$= \frac{e^4}{4} - \frac{e^4}{16} + \frac1{16} = \frac{3e^4 + 1}{16}.$$`,
     ],

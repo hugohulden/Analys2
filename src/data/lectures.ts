@@ -43,7 +43,7 @@ export interface Lecture {
   widget?: 'riemann'
 }
 
-export const LECTURES: Record<string, Lecture> = {
+export const LECTURES_1: Record<string, Lecture> = {
   F2: {
     id: 'F2', pages: 9, sections: '§12.3 Beräkning av primitiva funktioner: variabelbyte, partialintegration',
     keyPoints: [
@@ -362,6 +362,10 @@ Dessutom gäller **triangelolikheten** $\left|\int_a^bf\,dx\right|\le\int_a^b|f|
     ],
   },
 }
+
+import { LECTURES_2 } from './lectures2'
+
+export const LECTURES: Record<string, Lecture> = { ...LECTURES_1, ...LECTURES_2 }
 
 /** Alla lärarexempel med kontroller (för scripts/verify.py). */
 export const LECTURE_EXAMPLES = Object.values(LECTURES).flatMap((l) => l.examples)

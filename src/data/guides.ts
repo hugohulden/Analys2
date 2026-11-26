@@ -183,13 +183,13 @@ Integralen är konvergent med värdet 1.
 - **Area mellan kurvor:** $A=\int_a^b(\text{övre}-\text{undre})\,dx$.
 - **Volym med tvärsnitt:** $V=\int_a^bA(x)\,dx$, där $A(x)$ är tvärsnittsarean.
 - **Rotation kring $x$-axeln (skivor):** $V=\pi\int_a^bf(x)^2dx$.
-- **Rotation kring $y$-axeln (rör):** $V=2\pi\int_a^bx\,f(x)\,dx$.
+- **Rotation kring $y$-axeln:** skiva vågrätt. Lös ut $x$ som funktion av $y$; tvärsnittet är en cirkelskiva med $A(y)=\pi x(y)^2$ och $V=\int A(y)\,dy$. (Rörformeln ingår inte – F8.)
 - **Ackumulering:** sträcka $=\int v\,dt$, energi $=\int P\,dt$ osv.
 
 **Tänk så här.** Dela upp i tunna bitar, skriv bidraget $dV$ (eller $dA$, $ds$) för en bit och summera med en integral.
 
 **Varför?** Tentauppgift 6 (area eller volym) ger 5–9 p. Volymformlerna står *inte* på formelbladet.`,
-    practice: r`**Vad övningarna tränar (14.1–14.10, ackumulering.pdf).** Att hitta skärningspunkter, avgöra vilken kurva som ligger överst och välja skiv- eller rörmetod.
+    practice: r`**Vad övningarna tränar (14.1–14.10, ackumulering.pdf).** Att hitta skärningspunkter, avgöra vilken kurva som ligger överst och skriva upp tvärsnittsarean $A(x)$ (eller $A(y)$) för en tunn skiva.
 
 **Löst exempel.** Området mellan $y=x^2$ och $y=2x$ roteras kring $x$-axeln.
 
@@ -359,9 +359,9 @@ Har man en rot kan man alltså dividera bort en faktor (polynomdivision).
 - **Komplex metod:** $e^{ax}\cos bx=\operatorname{Re}e^{(a+bi)x}$.
 
 **Varför?** ht24 #8 (6 p) med $\sin2x$ och $\cos2x$ i högerledet, ht25 #8 med ett polynom.`,
-    practice: r`**Vad övningarna tränar (15.48–15.58).** Resonansfall, $z$-substitution och trigonometriska högerled.
+    practice: r`**Vad övningarna tränar (15.48–15.58).** Resonansfall (multiplicera ansatsen med $x$) och trigonometriska högerled.
 
-**Löst exempel.** $y''-4y=e^{2x}$. Rötterna är $\pm2$. Eftersom $e^{2x}$ redan löser den homogena ekvationen har vi resonans. Sätt $y=ze^{2x}$. Då är $y''=(z''+4z'+4z)e^{2x}$, och ekvationen blir $z''+4z'=1$. Den har lösningen $z=\frac x4$, så
+**Löst exempel.** $y''-4y=e^{2x}$. Rötterna är $\pm2$. Eftersom $e^{2x}$ redan löser den homogena ekvationen har vi resonans. Multiplicera ansatsen med $x$: $y_p=axe^{2x}$. Då är $y_p'=a(1+2x)e^{2x}$ och $y_p''=a(4+4x)e^{2x}$, och insättning ger $a(4+4x-4x)e^{2x}=4ae^{2x}=e^{2x}$, alltså $a=\frac14$:
 $$y_p=\frac x4e^{2x},\qquad y=C_1e^{2x}+C_2e^{-2x}+\frac x4e^{2x}.$$
 
 **Trig-högerled.** Ansätt *både* $\cos$ och $\sin$, även om högerledet bara innehåller den ena.

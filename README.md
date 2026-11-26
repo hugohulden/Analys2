@@ -35,7 +35,7 @@ Varje uppgift har en lista `checks` med anrop som kontrollerar svaret med **symp
 
 ```bash
 pip install sympy
-npm run verify     # 104 uppgifter, 128 kontroller
+npm run verify     # 500 uppgifter/deluppgifter, 570 kontroller
 ```
 
 ## Deploya till GitHub Pages

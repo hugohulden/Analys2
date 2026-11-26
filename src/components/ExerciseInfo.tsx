@@ -1,7 +1,19 @@
 import { useState } from 'react'
 import { lookupExercise } from '../data/book'
 import { solutionsFor } from '../data/book/solutions'
+import { EXERCISE_BY_ID } from '../data/exercises'
+import { EXERCISE_SESSION_COVERS } from '../data/guides'
+import { LECTURES } from '../data/lectures'
 import { Pill, Rich } from './ui'
+
+/** Bokkapitel → föreläsningar där metoderna gås igenom (om övningen inte finns i schemat). */
+const CHAPTER_LECTURES: Record<string, string[]> = { '6': ['F12'], '12': ['F2', 'F3', 'F4'], '13': ['F5', 'F6', 'F7'], '14': ['F8', 'F9'], '15': ['F10', 'F11', 'F12'] }
+
+function lecturesFor(id: string): string[] {
+  const ex = EXERCISE_BY_ID[id] ?? EXERCISE_BY_ID[id.replace(/[a-k]$/, '')]
+  const ids = ex ? EXERCISE_SESSION_COVERS[ex.momentId] ?? [ex.momentId] : CHAPTER_LECTURES[id.split('.')[0]] ?? []
+  return ids.filter((l) => LECTURES[l])
+}
 
 /** Uppgiftstext, bokens tips och facit för en övning (t.ex. '12.17d'). */
 export function ExerciseInfo({ id }: { id: string }) {
@@ -19,6 +31,7 @@ export function ExerciseInfo({ id }: { id: string }) {
   const answers = part ? (part.answer ? [[letter!, part.answer] as const] : []) : [...parts.filter(([, p]) => p.answer).map(([l, p]) => [l, p.answer!] as const)]
   const whole = task.answer
   const sols = solutionsFor(task.id, Object.keys(task.parts ?? {}), letter)
+  const lecs = lecturesFor(id)
   return (
     <div className="ex-info">
       <div className="row wrap gap small">
@@ -48,6 +61,15 @@ export function ExerciseInfo({ id }: { id: string }) {
           {sols.map(([l, txt]) => (
             <Rich key={l || 'all'} text={l ? `**${l})** ${txt}` : txt} />
           ))}
+          {lecs.length > 0 && (
+            <p className="small muted">
+              Metoderna gås igenom i{' '}
+              {lecs.map((l, i) => (
+                <span key={l}>{i > 0 && (i === lecs.length - 1 ? ' och ' : ', ')}<a href={`#/forelasning/${l}`}>{l}</a></span>
+              ))}{' '}
+              – läs där om du kör fast.
+            </p>
+          )}
         </div>
       )}
       {showAnswer && (
