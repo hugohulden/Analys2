@@ -8,7 +8,7 @@ Allt är på svenska och fungerar helt offline efter första besöket. Det finns
 
 | Vy | Innehåll |
 |---|---|
-| **Idag** | Nedräkning till Dugga 2 och tentan och dagens pass med tid per punkt: nytt stoff, övningar, repetition och tentauppgift. Om du ligger efter visas ett ikapp-block först, och repetitionen skjuts upp. Knappen "Mindre tid" ger en 45-minutersversion. Du kan bläddra mellan dagar. |
+| **Idag** | Nedräkning och dagens pass. Varje pass **börjar med föreläsningen**: gå igenom appens sammanfattning av föreläsningen (anteckningar, lärarens exempel, kontrollfrågor) och bocka av. Missade föreläsningar kommer först (en per föreläsningsdag, upp till tre på dagar utan ny föreläsning). Sedan ikapp, dagens G-övningar, tentauppgift och repetition. "Mindre tid" ger en kortversion. |
 | **Kursplan** | Hela schemat vecka för vecka. Varje övning (även uppdelade intervall och deluppgifter) har ✅/🟡/❌. 🟡 och ❌ hamnar i repetitionen och listas under "Fråga på Ö-passet". Progress visas per vecka och per område. |
 | **Tentor** | 104 uppgifter: 3 tentor, 5 duggor och 36 egna varianter. Uppgifterna avslöjas stegvis (ledtråd → metod → lösning → svar), och du rättar dig själv efter varje försök. Det går att filtrera på område, källa, poäng och status. |
 | **Simulering** | Riktig tenta (4 h med timer), mixtenta (en uppgift per tentaplats), mini-dugga (3 × 2 p, 1 h), självrättning, betyg och historik med trend. |
@@ -83,4 +83,5 @@ src/views/           Vyerna
 - Dugga 2:s innehåll är okänt. Förvalt är F10–F15 (DE ordning 1 och komplexa tal), och det går att ändra i Inställningar.
 - Bonus: minst 4 av 6 p på en dugga ger 1 bonuspoäng. Det står på Dugga 1B.
 - Varje bokuppgift kopplas till ett område utifrån kapitel och uppgiftsnummer. Det är en uppskattning, eftersom boken inte finns i repot (se `exerciseArea` i `src/data/exercises.ts`).
+- Under v. 46–51 innehåller passen bara G-nivå. Högre nivå tas med från 21/12 (ändras i Inställningar), och bara med målbetyg 4/5.
 - F1–F7 räknas som redan gjorda. Bara övningar från och med 18/11 (F8) räknas som "ikapp". Det går att ändra.

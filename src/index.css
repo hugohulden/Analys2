@@ -1184,3 +1184,27 @@ input[type='range'] { width: 100%; }
 }
 :root[data-theme='dark'] .chip-sm.lv-h { color: #b98cff; }
 :root[data-theme='dark'] .chip-sm.lv-demo { color: #4fd1c5; }
+
+/* Föreläsningsrad på startsidan */
+.lecrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 4px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  background: linear-gradient(135deg, var(--accent-soft), var(--surface));
+  margin: 6px 0;
+  list-style: none;
+}
+.lecrow.done { border-color: color-mix(in srgb, var(--ok) 40%, var(--border)); background: linear-gradient(135deg, var(--ok-soft), var(--surface)); }
+.lecrow-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); padding: 4px 6px; }
+.lecrow-icon { width: 36px; height: 36px; border-radius: 12px; background: var(--surface); display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; box-shadow: var(--shadow); }
+.lecrow.done .lecrow-icon { color: var(--ok); font-weight: 800; }
+.lecrow-text { display: flex; flex-direction: column; min-width: 0; }
+.lecrow-title { font-weight: 650; line-height: 1.25; font-size: 0.95rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.lecrow-sub { font-size: 0.78rem; color: var(--text-2); }
+.lecrow-open { font-size: 0.85rem; font-weight: 650; color: var(--accent); white-space: nowrap; }
+.lec-done { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.lec-done.is-done { background: var(--ok-soft); }
+.checklist .lecrow { border-top: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); }

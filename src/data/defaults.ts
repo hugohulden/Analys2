@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: Settings = {
   maxMinutesWeekend: 120,
   dugga2Moments: ['F10', 'F11', 'F12', 'F13', 'F14', 'F15'],
   trackFrom: '2026-11-18',
+  higherFrom: '2026-12-21',
   bonusPerDugga: 1,
   theme: 'auto',
 }
@@ -27,6 +28,7 @@ export function emptyProgress(): Progress {
     sims: [],
     duggaResults: {},
     cardReviews: [],
+    lecturesDone: {},
   }
 }
 
@@ -48,5 +50,6 @@ export function normalizeProgress(raw: unknown): Progress {
     sims: r.sims ?? [],
     duggaResults: r.duggaResults ?? {},
     cardReviews: r.cardReviews ?? [],
+    lecturesDone: r.lecturesDone ?? {},
   }
 }

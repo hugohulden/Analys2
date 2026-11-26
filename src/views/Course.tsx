@@ -18,7 +18,8 @@ const levelFor = (title: string): ExerciseLevel => (title === 'G-nivå' ? 'G' : 
 export function CourseView() {
   const { progress, today } = useStore()
   const nextO = nextExerciseSession(today)
-  const inclHigher = progress.settings.targetGrade >= 4
+  const inclHigher = false // högre nivå räknas inte i progress under grundveckorna
+  const higherFrom = progress.settings.higherFrom ?? '2026-12-21'
   const counted = (lvl: string) => lvl === 'G' || (inclHigher && lvl === 'högre')
 
   const areaStats = useMemo(
@@ -35,7 +36,7 @@ export function CourseView() {
   return (
     <div className="page">
       <h1>Kursplan</h1>
-      <p className="muted small">Markera varje uppgift: ✅ klarade själv · 🟡 klarade med hjälp · ❌ fattar inte. 🟡 och ❌ hamnar i repetitionskön och flaggas till nästa Ö-pass. {inclHigher ? 'Progress räknar G + högre nivå (målbetyg 4/5).' : 'Progress räknar G-nivå (målbetyg 3).'}</p>
+      <p className="muted small">Markera varje uppgift: ✅ klarade själv · 🟡 klarade med hjälp · ❌ fattar inte. 🟡 och ❌ hamnar i repetitionskön och flaggas till nästa Ö-pass. Progress räknar G-nivå. Högre nivå tas med i passen från {formatShort(higherFrom)} (målbetyg 4/5), när grunderna sitter.</p>
 
       {asks.length > 0 && (
         <div className="card calm">

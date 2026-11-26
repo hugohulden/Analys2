@@ -5,6 +5,7 @@ import { MOMENTS, MOMENT_BY_ID } from '../data/schedule'
 import { formatShort } from '../logic/dates'
 import { srsKey } from '../logic/leitner'
 import { useStore } from '../state/store'
+import { toggleLecture } from '../logic/actions'
 import { go } from '../state/router'
 import { Collapsible, Pill, Rich } from '../components/ui'
 import { PracticeGuide, PreviewGuide } from '../components/MomentGuide'
@@ -16,7 +17,7 @@ export function LectureView({ id }: { id?: string }) {
 }
 
 function LectureList() {
-  const { today } = useStore()
+  const { progress } = useStore()
   return (
     <div className="page">
       <h1>Föreläsningar</h1>
@@ -30,7 +31,7 @@ function LectureList() {
                 <br />
                 <span className="small">{m.title}</span>
               </span>
-              {LECTURES[m.id] ? <Pill tone="ok">anteckningar</Pill> : m.date < today && m.kind === 'F' ? <Pill>väntar</Pill> : null}
+              {(progress.lecturesDone ?? {})[m.id] ? <Pill tone="ok">✓ genomgången</Pill> : LECTURES[m.id] ? <Pill tone="info">anteckningar</Pill> : null}
             </a>
           </li>
         ))}
@@ -40,6 +41,8 @@ function LectureList() {
 }
 
 function LecturePage({ id }: { id: string }) {
+  const { progress, update, today } = useStore()
+  const doneDate = (progress.lecturesDone ?? {})[id]
   const m = MOMENT_BY_ID[id]
   const lec = LECTURES[id]
   const idx = MOMENTS.findIndex((x) => x.id === id)
@@ -105,7 +108,12 @@ function LecturePage({ id }: { id: string }) {
       )}
 
       {m.kind === 'F' && <PracticeGuide momentId={id} />}
-      <a className="btn" href="#/kursplan">Till övningarna i kursplanen</a>
+      <div className={`card lec-done ${doneDate ? 'is-done' : ''}`}>
+        <button className={`btn ${doneDate ? 'ok' : 'primary'}`} onClick={() => update((p) => toggleLecture(p, id, today))}>
+          {doneDate ? `✓ Genomgången ${formatShort(doneDate)} (ångra)` : `Markera ${id} som genomgången`}
+        </button>
+        <a className="btn" href="#/idag">Till dagens övningar ›</a>
+      </div>
 
       {lec && (
         <section className="card">

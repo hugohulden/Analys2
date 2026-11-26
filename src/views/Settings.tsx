@@ -39,7 +39,11 @@ export function SettingsView() {
             </button>
           ))}
         </div>
-        <p className="small muted">Betyg 4/5: högre-nivå-uppgifterna ingår i dagens pass.</p>
+        <p className="small muted">Under v. 46–51 fokuserar passen på G-nivå. Med målbetyg 4/5 tas högre nivå med från datumet nedan (julperiodens repetitions- och temadagar).</p>
+        <label className="field">
+          Högre nivå från och med
+          <input type="date" value={s.higherFrom} onChange={(e) => e.target.value && set({ higherFrom: e.target.value })} />
+        </label>
       </section>
 
       <section className="card">

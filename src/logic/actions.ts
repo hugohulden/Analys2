@@ -53,3 +53,13 @@ export function toggleDone(p0: Progress, date: string, itemId: string): Progress
   p.planDone[date] = [...list]
   return p
 }
+
+/** Markera/avmarkera en föreläsning (eller Ö-sida) som genomgången. */
+export function toggleLecture(p0: Progress, momentId: string, today: string): Progress {
+  const p = clone(p0)
+  const done = { ...(p.lecturesDone ?? {}) }
+  if (done[momentId]) delete done[momentId]
+  else done[momentId] = today
+  p.lecturesDone = done
+  return p
+}

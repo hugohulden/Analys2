@@ -26,6 +26,7 @@ export interface PlanItem {
   srsKey?: string
   sourceId?: SourceId | 'mix'
   link?: string
+  momentId?: string
 }
 
 export type BlockId = 'ikapp' | 'nytt' | 'ovningar' | 'fraga' | 'tenta' | 'main' | 'atgard' | 'rep' | 'info'
@@ -54,7 +55,9 @@ export interface DayPlan {
   repetitionPostponed: boolean
 }
 
-export const MIN = { lecture: 15, demo: 5, G: 6, högre: 12, review: 3 }
+export const MIN = { lecture: 30, lectureShort: 20, oPage: 10, demo: 5, G: 6, högre: 12, review: 3 }
+/** Max antal gamla föreläsningar per dag: 1 om dagen har en ny föreläsning, annars 3 (ikapp-/repetitionsdagar). */
+export const MAX_LECTURE_BACKLOG = { withNew: 1, withoutNew: 3 }
 export const problemMinutes = (points: number) => Math.round(2 + points * 3.5)
 
 // ---------------------------------------------------------------------------
@@ -178,7 +181,8 @@ export function actionList(p: Progress, sourceId: SourceId | undefined, m: Maste
 export function buildDayPlan(date: string, p: Progress): DayPlan {
   const s = p.settings
   const m = computeMastery(p, date)
-  const inclHigher = s.targetGrade >= 4
+  // Högre nivå först efter grunderna (inställningen higherFrom, förvalt 21/12) och bara för målbetyg 4/5.
+  const inclHigher = s.targetGrade >= 4 && date >= (s.higherFrom ?? '2026-12-21')
   const day = resolveDay(date, s)
   const lessTime = !!p.lessTime[date]
   const weekend = isWeekend(date)
@@ -187,7 +191,8 @@ export function buildDayPlan(date: string, p: Progress): DayPlan {
   if (day.kind === 'light') budget = 60
   if (lessTime) budget = Math.min(budget, 45)
 
-  const wantLevel = (lv: ExerciseLevel) => lv === 'G' || (inclHigher && lv === 'högre')
+  // Ikapp och dagens övningar är alltid G-nivå; högre nivå tas in på repetitions-/temadagar (se nedan).
+  const wantLevel = (lv: ExerciseLevel) => lv === 'G'
 
   // Ikapp: ej gjorda (eller gjorda idag) övningar som skulle varit klara före idag.
   const behindAll = EXERCISES.filter((e) => wantLevel(e.level) && e.due < date && e.due >= s.trackFrom && (!exDone(p, e.id) || exDoneOn(p, e.id, date)))
@@ -202,14 +207,36 @@ export function buildDayPlan(date: string, p: Progress): DayPlan {
   const fixed: PlanBlock[] = []
   const momentsToday = (day.moments ?? []).map((id) => MOMENT_BY_ID[id]).filter(Boolean)
 
-  // --- Nytt stoff ---
-  if (momentsToday.length) {
+  // --- Börja här: föreläsningar att gå igenom (appens sammanfattning ersätter föreläsningen) ---
+  const lecDone = (id: string) => !!(p.lecturesDone ?? {})[id]
+  const lecDoneToday = (id: string) => (p.lecturesDone ?? {})[id] === date
+  const lectureItem = (mo: (typeof MOMENTS)[number], backlog: boolean): PlanItem =>
+    mo.kind === 'F'
+      ? { id: `lec:${mo.id}`, kind: 'lecture', label: `${mo.id}: ${mo.title}${backlog ? ' (missad)' : ''}`, minutes: lessTime ? MIN.lectureShort : MIN.lecture, done: lecDone(mo.id), link: `#/forelasning/${mo.id}`, momentId: mo.id }
+      : { id: `lec:${mo.id}`, kind: 'lecture', label: `${mo.id}: ${mo.title}`, minutes: lessTime ? 0 : MIN.oPage, done: lecDone(mo.id), link: `#/forelasning/${mo.id}`, momentId: mo.id }
+  const noLectureKinds: string[] = ['mock-exam', 'exam', 'dugga', 'free', 'rest', 'light']
+  const lectureBacklog = noLectureKinds.includes(day.kind)
+    ? []
+    : MOMENTS.filter((mo) => mo.kind === 'F' && mo.date < date && mo.date >= s.trackFrom && (!lecDone(mo.id) || lecDoneToday(mo.id)) && !(day.moments ?? []).includes(mo.id) && mo.id !== 'F20')
+  if (momentsToday.length || lectureBacklog.length) {
     const items: PlanItem[] = []
+    // Gamla föreläsningar först (max två per dag, de som redan gåtts igenom idag räknas inte).
+    const maxBacklog = momentsToday.some((mo) => mo.kind === 'F') ? MAX_LECTURE_BACKLOG.withNew : MAX_LECTURE_BACKLOG.withoutNew
+    let backlogLeft = maxBacklog
+    for (const mo of lectureBacklog) {
+      if (!lecDoneToday(mo.id)) {
+        if (backlogLeft <= 0) continue
+        backlogLeft--
+      }
+      items.push(lectureItem(mo, true))
+    }
     for (const mo of momentsToday) {
-      if (mo.kind === 'F') {
-        items.push({ id: `lec:${mo.id}`, kind: 'lecture', label: `${mo.id}: ${mo.title}${mo.sections !== '–' ? ` (avsnitt ${mo.sections})` : ''}`, minutes: lessTime ? 0 : MIN.lecture, done: markDone(p, date, `lec:${mo.id}`), link: `#/forelasning/${mo.id}` })
+      if (mo.kind === 'F' && mo.id !== 'F20') {
+        items.push(lectureItem(mo, false))
+      } else if (mo.kind === 'F') {
+        items.push({ id: `lec:${mo.id}`, kind: 'lecture', label: `${mo.id}: ${mo.title}`, minutes: 0, done: lecDone(mo.id), link: `#/forelasning/${mo.id}`, momentId: mo.id })
       } else if (mo.kind === 'Ö') {
-        items.push({ id: `lec:${mo.id}`, kind: 'lecture', label: `${mo.id}: ${mo.title} – försök själv på demo-uppgifterna först`, minutes: 0, done: markDone(p, date, `lec:${mo.id}`), link: `#/forelasning/${mo.id}` })
+        items.push(lectureItem(mo, false))
         if (!lessTime) {
           const demos = [...expandAll(mo.demoG), ...(inclHigher ? expandAll(mo.demoHigher) : [])]
           for (const id of [...new Set(demos)]) {
@@ -220,7 +247,8 @@ export function buildDayPlan(date: string, p: Progress): DayPlan {
         }
       }
     }
-    fixed.push({ id: 'nytt', title: 'Nytt stoff', items })
+    const pending = lectureBacklog.filter((mo) => !lecDone(mo.id)).length - Math.min(maxBacklog, lectureBacklog.filter((mo) => !lecDone(mo.id)).length)
+    fixed.push({ id: 'nytt', title: 'Börja här: föreläsning', items, note: pending > 0 ? `${pending} äldre föreläsning${pending > 1 ? 'ar' : ''} till väntar – de kommer i nästa pass.` : undefined })
   }
 
   // --- Fråga på Ö-passet ---
@@ -271,7 +299,10 @@ export function buildDayPlan(date: string, p: Progress): DayPlan {
       const weak = weakestAreas(m, 3, intro)
       mainTitle = 'Svaga områden'
       fill = problemsForAreas(p, date, weak, m)
-      const exs = EXERCISES.filter((e) => weak.includes(e.area) && (e.level === 'G' || e.level === 'högre') && (inclHigher || e.level === 'G') && (!exDone(p, e.id) || exDoneOn(p, e.id, date))).slice(0, 4)
+      // Efter grunderna: högre nivå först (målbetyg 4/5), annars kvarvarande G-uppgifter.
+      const exs = EXERCISES.filter((e) => weak.includes(e.area) && (e.level === 'G' || (inclHigher && e.level === 'högre')) && (!exDone(p, e.id) || exDoneOn(p, e.id, date)))
+        .sort((a, b) => (a.level === b.level ? 0 : a.level === 'högre' ? -1 : 1))
+        .slice(0, inclHigher ? 6 : 4)
       if (exs.length) extraBlocks.push({ id: 'ovningar', title: 'Bokuppgifter i svaga områden', items: exs.map((e) => exerciseItem(p, e)) })
       plan.note = `Valda områden: ${weak.join(', ')}`
       if (day.note === 'janej') extraBlocks.push({ id: 'rep', title: 'Ja/nej-kort (snabba fällor)', items: reviewItems(p, date, m, 6, ['janej']) })
@@ -390,7 +421,7 @@ export function buildDayPlan(date: string, p: Progress): DayPlan {
   const repAlready = extraBlocks.some((b) => b.id === 'rep') || ['exam', 'mock-exam', 'free'].includes(day.kind)
   if (!repAlready) {
     let n = Math.max(0, Math.min(4, Math.floor(remaining / MIN.review)))
-    if (behind === 0 && !lessTime) n = Math.max(2, n)
+    if (behind === 0 && !lessTime && remaining >= 2 * MIN.review) n = Math.max(2, n)
     if (n >= 2 || (lessTime && n >= 1)) {
       repItems = reviewItems(p, date, m, n)
       remaining -= sum(repItems.filter((i) => !i.done))
@@ -413,7 +444,9 @@ export function buildDayPlan(date: string, p: Progress): DayPlan {
 
   plan.postponedIkapp = ikappCands.filter((e) => !exDone(p, e.id)).length - ikappItems.filter((i) => !i.done).length
 
-  // ----------------- Ordning: Ikapp först -----------------
+  // ----------------- Ordning: föreläsningen först, sedan ikapp -----------------
+  const nytt = fixed.find((b) => b.id === 'nytt')
+  if (nytt) blocks.push(nytt)
   if (ikappItems.length)
     blocks.push({
       id: 'ikapp',
@@ -422,8 +455,6 @@ export function buildDayPlan(date: string, p: Progress): DayPlan {
       items: ikappItems,
       note: plan.postponedIkapp > 0 ? `${plan.postponedIkapp} till väntar – de kommer först i morgondagens pass.` : undefined,
     })
-  const nytt = fixed.find((b) => b.id === 'nytt')
-  if (nytt) blocks.push(nytt)
   if (ovningar.length) blocks.push({ id: 'ovningar', title: day.kind === 'catchup' ? 'Ikapp-dagens övningar' : 'Övningar', items: ovningar })
   blocks.push(...fixed.filter((b) => b.id === 'fraga'))
   blocks.push(...fixed.filter((b) => b.id === 'main'))

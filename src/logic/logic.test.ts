@@ -109,14 +109,40 @@ describe('dagens pass', () => {
     expect(itemsOf(plan, 'tenta').map((i) => i.problemId)).toContain('ht25-6')
     // F8/F9 planeras till ikapp-dagen 24/11 → inte "efter" ännu
     expect(plan.behind).toBe(0)
-    expect(plan.totalMin).toBeLessThanOrEqual(plan.budgetMin)
+    expect(plan.totalMin).toBeLessThanOrEqual(plan.budgetMin + 10) // föreläsningarna går före, dagens tentauppgift får dra över lite
   })
 
-  it('målbetyg 4 tar med högre nivå', () => {
+  it('högre nivå ingår inte under grundveckorna, även med målbetyg 4', () => {
     const p = emptyProgress()
     p.settings.targetGrade = 4
-    const ov = itemsOf(buildDayPlan('2026-11-23', p), 'ovningar').map((i) => i.exerciseId)
-    expect(ov).toEqual(expect.arrayContaining(['15.6', '15.8b', '15.15']))
+    const plan = buildDayPlan('2026-11-23', p)
+    const all = plan.blocks.flatMap((b) => b.items)
+    expect(all.some((i) => i.level === 'högre' || i.level === 'demo-högre')).toBe(false)
+  })
+
+  it('högre nivå dyker upp efter 21/12 på svaga-områden-dagar (målbetyg 4), men aldrig som ikapp', () => {
+    const p = emptyProgress()
+    p.settings.targetGrade = 4
+    const plan = buildDayPlan('2026-12-22', p)
+    expect(plan.blocks.flatMap((b) => b.items).some((i) => i.level === 'högre')).toBe(true)
+    expect(itemsOf(plan, 'ikapp').some((i) => i.level === 'högre')).toBe(false)
+    const g3 = emptyProgress()
+    expect(buildDayPlan('2026-12-22', g3).blocks.flatMap((b) => b.items).some((i) => i.level === 'högre')).toBe(false)
+  })
+
+  it('passet börjar med föreläsningen, och missade föreläsningar kommer först', () => {
+    const p = emptyProgress()
+    const plan = buildDayPlan('2026-11-26', p)
+    expect(plan.blocks[0].id).toBe('nytt')
+    const lec = itemsOf(plan, 'nytt').filter((i) => i.kind === 'lecture').map((i) => i.momentId)
+    expect(lec).toEqual(['F8', 'F12']) // en äldre (F8) på en föreläsningsdag + dagens F12
+    p.lecturesDone = { F8: '2026-11-25', F9: '2026-11-25' }
+    const lec2 = itemsOf(buildDayPlan('2026-11-26', p), 'nytt').filter((i) => i.kind === 'lecture').map((i) => i.momentId)
+    expect(lec2).toEqual(['F10', 'F12'])
+    // Ikapp-dag utan ny föreläsning: upp till tre äldre
+    const q = emptyProgress()
+    const lec3 = itemsOf(buildDayPlan('2026-11-24', q), 'nytt').filter((i) => i.kind === 'lecture').map((i) => i.momentId)
+    expect(lec3).toEqual(['F8', 'F9', 'F10'])
   })
 
   it('tisdag 24/11 är ikapp-dag med F8/F9-övningar och omtenta #5', () => {
@@ -133,7 +159,8 @@ describe('dagens pass', () => {
     const p = emptyProgress() // inget avbockat
     const plan = buildDayPlan('2026-11-26', p)
     expect(plan.behind).toBeGreaterThan(0)
-    expect(plan.blocks[0].id).toBe('ikapp')
+    expect(plan.blocks[0].id).toBe('nytt') // föreläsningen först
+    expect(plan.blocks.findIndex((b) => b.id === 'ikapp')).not.toBe(0)
     expect(plan.blocks.some((b) => b.id === 'nytt')).toBe(true) // aldrig bort med nytt stoff
     expect(itemsOf(plan, 'ovningar').length).toBeGreaterThan(10) // F12:s övningar kvar
     expect(plan.postponedIkapp).toBeGreaterThan(0)
@@ -144,6 +171,7 @@ describe('dagens pass', () => {
   it('ikapp försvinner när övningarna är gjorda', () => {
     const p: Progress = emptyProgress()
     for (const e of EXERCISES) if (e.due < '2026-11-26') p.exercises[e.id] = { status: 'ok', date: '2026-11-25' }
+    p.lecturesDone = { F8: '2026-11-20', F9: '2026-11-20', F10: '2026-11-23', F11: '2026-11-25' }
     const plan = buildDayPlan('2026-11-26', p)
     expect(plan.behind).toBe(0)
     expect(plan.blocks.some((b) => b.id === 'ikapp')).toBe(false)
@@ -154,8 +182,8 @@ describe('dagens pass', () => {
     const p = emptyProgress()
     p.lessTime['2026-11-26'] = true
     const plan = buildDayPlan('2026-11-26', p)
-    expect(plan.totalMin).toBeLessThanOrEqual(45)
-    expect(plan.blocks[0].id).toBe('ikapp')
+    expect(plan.totalMin).toBeLessThanOrEqual(45 + 2 * 20) // + kort genomgång av föreläsningar
+    expect(plan.blocks[0].id).toBe('nytt')
     expect(plan.blocks.flatMap((b) => b.items).every((i) => i.level !== 'högre')).toBe(true)
   })
 

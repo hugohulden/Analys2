@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import { ExerciseInfo } from '../components/ExerciseInfo'
-import { PracticeGuide, PreviewGuide } from '../components/MomentGuide'
+import { PracticeGuide } from '../components/MomentGuide'
 import { EXERCISE_BY_ID } from '../data/exercises'
 import { MOMENT_BY_ID } from '../data/schedule'
-import { setExerciseStatus, toggleDone } from '../logic/actions'
+import { setExerciseStatus, toggleDone, toggleLecture } from '../logic/actions'
+import { LECTURES } from '../data/lectures'
 import { addDays, diffDays, formatLong, todayISO } from '../logic/dates'
 import { buildDayPlan, type PlanItem } from '../logic/planner'
 import { useStore } from '../state/store'
@@ -95,8 +96,6 @@ export function TodayView() {
               Starta repetition ({b.items.filter((i) => !i.done).length})
             </button>
           )}
-          {b.id === 'nytt' &&
-            b.items.filter((i) => i.id.startsWith('lec:')).map((i) => <PreviewGuide key={i.id} momentId={i.id.slice(4)} />)}
           {b.id === 'ovningar' &&
             [...new Set(b.items.map((i) => EXERCISE_BY_ID[i.exerciseId ?? '']?.momentId).filter(Boolean))].map((mid) => <PracticeGuide key={mid} momentId={mid!} />)}
           {(() => {
@@ -143,6 +142,28 @@ export function TodayView() {
 
   function PlanRow({ it, date }: { it: PlanItem; date: string }) {
     const t = today ?? todayISO()
+    if (it.kind === 'lecture' && it.momentId) {
+      const mid = it.momentId
+      const hasNotes = !!LECTURES[mid]
+      return (
+        <li className={`lecrow ${it.done ? 'done' : ''}`}>
+          <a className="lecrow-main" href={it.link}>
+            <span className="lecrow-icon" aria-hidden>{it.done ? '✓' : '📓'}</span>
+            <span className="lecrow-text">
+              <span className="lecrow-title">{it.label}</span>
+              <span className="lecrow-sub">
+                {it.minutes > 0 ? `≈ ${fmtMin(it.minutes)} · ` : ''}
+                {MOMENT_BY_ID[mid]?.kind === 'Ö' ? 'lösta exempel + demo-uppgifter' : hasNotes ? 'anteckningar, lärarens exempel, kontrollfrågor' : 'sammanfattning + lösta exempel'}
+              </span>
+            </span>
+            <span className="lecrow-open">Öppna ›</span>
+          </a>
+          <button type="button" className={`ss ss-ok ${it.done ? 'on' : ''}`} title={it.done ? 'Genomgången' : 'Markera som genomgången'} aria-label="Markera som genomgången" aria-pressed={it.done} onClick={() => update((p) => toggleLecture(p, mid, date))}>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" aria-hidden><path d="M5 12.5l4.2 4.2L19 7" fill="none" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+        </li>
+      )
+    }
     if (it.kind === 'info' && it.exerciseId) {
       const ex = it.exerciseId!
       const st = progress.exercises[ex]

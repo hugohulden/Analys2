@@ -203,6 +203,8 @@ export interface Settings {
   dugga2Moments: string[]
   /** Övningar från moment före detta datum räknas som redan gjorda (ej ikapp). */
   trackFrom: string
+  /** Högre nivå-uppgifter tas med först från detta datum (efter grunderna). */
+  higherFrom: string
   bonusPerDugga: number
   theme: 'auto' | 'light' | 'dark'
 }
@@ -218,4 +220,6 @@ export interface Progress {
   sims: SimResult[]
   duggaResults: { dugga1?: number; dugga2?: number }
   cardReviews: { id: string; date: string; correct: boolean }[]
+  /** Föreläsningar (moment-id) som gåtts igenom i appen, med datum. */
+  lecturesDone: Record<string, string>
 }
